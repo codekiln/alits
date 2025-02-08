@@ -1,0 +1,16 @@
+---
+description: Configuring dev containers, Dockerfile, etc
+globs: .devcontainer/*,Dockerfile,docker-compose.yml
+---
+
+# VS Code Dev Containers
+
+I'm using a VS Code dev container setup. Here are relevant files:
+- [Dockerfile](mdc:Dockerfile)
+- [.dockerignore](mdc:.dockerignore)
+- [docker-compose.yml](mdc:docker-compose.yml)
+- [package.json](mdc:package.json)
+- [pnpm-lock.yaml](mdc:pnpm-lock.yaml)
+- [pnpm-workspace.yaml](mdc:pnpm-workspace.yaml)
+- [turbo.json](mdc:turbo.json)
+
