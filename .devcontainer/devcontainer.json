@@ -10,7 +10,8 @@
         "rvest.vs-code-prettier-eslint",
         "esbenp.prettier-vscode",
         "ms-vscode.makefile-tools",
-        "bs-code.git-quick-stage"
+        "bs-code.git-quick-stage",
+        "ms-azuretools.vscode-docker"
       ]
     }
   },
