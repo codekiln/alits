@@ -7,14 +7,13 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "rvest.vs-code-prettier-eslint",
-        "esbenp.prettier-vscode",
-        "ms-vscode.makefile-tools",
         "bs-code.git-quick-stage",
-        "ms-azuretools.vscode-docker"
+        "esbenp.prettier-vscode",
+        "github.vscode-pull-request-github",
+        "ms-azuretools.vscode-docker",
+        "ms-vscode.makefile-tools",
+        "rvest.vs-code-prettier-eslint"
       ]
     }
-  },
-  // "postCreateCommand": "./.devcontainer/scripts/postCreateCommand.sh",
-	// "postStartCommand": "./.devcontainer/scripts/postStartCommand.sh"
+  }
 }

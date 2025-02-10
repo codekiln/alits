@@ -1,0 +1,22 @@
+{
+  "name": "kebricide",
+  "version": "0.0.1",
+  "description": "Kebricide Max for Live Device",
+  "scripts": {
+    "build": "pnpm maxmsp build",
+    "dev": "pnpm maxmsp dev"
+  },
+  "keywords": [
+    "maxmsp",
+    "max",
+    "max-for-live"
+  ],
+  "author": "codekiln",
+  "license": "MIT",
+  "devDependencies": {
+    "@my-username/my-library": "workspace:*",
+    "@aptrn/maxmsp-ts": "file:../../../maxmsp-ts",
+    "@types/maxmsp": "^1.0.13",
+    "typescript": "^5.6.2"
+  }
+} 

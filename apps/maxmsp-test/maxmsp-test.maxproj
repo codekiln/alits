@@ -2,8 +2,8 @@
 	"name" : "maxmsp-test",
 	"version" : 1,
 	"creationdate" : 3810572918,
-	"modificationdate" : 3811271094,
-	"viewrect" : [ 25.0, 133.0, 870.0, 980.0 ],
+	"modificationdate" : 3821946984,
+	"viewrect" : [ 2070.0, 635.0, 870.0, 339.0 ],
 	"autoorganize" : 1,
 	"hideprojectwindow" : 0,
 	"showdependencies" : 1,
@@ -38,10 +38,6 @@
 				"kind" : "javascript",
 				"local" : 1
 			}
-
-		}
-,
-		"other" : 		{
 
 		}
 
