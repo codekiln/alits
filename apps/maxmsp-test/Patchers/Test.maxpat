@@ -3,14 +3,14 @@
 		"fileversion" : 1,
 		"appversion" : 		{
 			"major" : 8,
-			"minor" : 6,
-			"revision" : 2,
+			"minor" : 5,
+			"revision" : 8,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 131.0, 230.0, 1295.0, 928.0 ],
+		"rect" : [ 119.0, 118.0, 930.0, 928.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -59,7 +59,7 @@
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 536.0, 312.0, 47.0, 22.0 ],
 					"saved_object_attributes" : 					{
-						"filename" : "main.js",
+						"filename" : "main",
 						"parameter_enable" : 0
 					}
 ,
@@ -96,16 +96,16 @@
 			}
  ],
 		"dependency_cache" : [ 			{
-				"name" : "@not251-not251_index.js",
-				"bootpath" : "~/Documents/Code/maxmsp-ts-example/Code/lib/@not251-not251",
-				"patcherrelativepath" : "../Code/lib/@not251-not251",
+				"name" : "Main.js",
+				"bootpath" : "~/Documents/GitHub/alits/apps/maxmsp-test/Code",
+				"patcherrelativepath" : "../Code",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
 , 			{
-				"name" : "main.js",
-				"bootpath" : "~/Documents/Code/maxmsp-ts-example/Code",
-				"patcherrelativepath" : "../Code",
+				"name" : "myLibrary_index.js",
+				"bootpath" : "~/Documents/GitHub/alits/apps/maxmsp-test/Code/lib/@my-username-my-library",
+				"patcherrelativepath" : "../Code/lib/@my-username-my-library",
 				"type" : "TEXT",
 				"implicit" : 1
 			}
