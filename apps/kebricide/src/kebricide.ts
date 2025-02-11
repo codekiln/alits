@@ -5,7 +5,7 @@ outlets = 1;
 autowatch = 1;
 
 function bang() {
-  post(mylib.greet() + "\n");
+  post("is this working? " + mylib.greet() + "\n");
 }
 
 bang();
