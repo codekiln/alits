@@ -23,9 +23,9 @@ importers:
 
   apps/kebricide:
     devDependencies:
-      '@aptrn/maxmsp-ts':
-        specifier: file:../../../maxmsp-ts
-        version: file:../maxmsp-ts
+      '@codekiln/maxmsp-ts':
+        specifier: workspace:*
+        version: link:../../packages/maxmsp-ts
       '@my-username/my-library':
         specifier: workspace:*
         version: link:../../packages/my-library
@@ -47,6 +47,22 @@ importers:
       '@types/maxmsp':
         specifier: ^1.0.13
         version: 1.0.13
+      typescript:
+        specifier: ^5.6.2
+        version: 5.7.3
+
+  packages/maxmsp-ts:
+    dependencies:
+      chokidar:
+        specifier: ^4.0.1
+        version: 4.0.3
+    devDependencies:
+      '@changesets/cli':
+        specifier: ^2.27.9
+        version: 2.27.12
+      '@types/node':
+        specifier: ^22.7.4
+        version: 22.13.1
       typescript:
         specifier: ^5.6.2
         version: 5.7.3
@@ -98,10 +114,6 @@ packages:
 
   '@aptrn/maxmsp-ts@0.0.1':
     resolution: {integrity: sha512-JWX+n3ClyHxT9yaQ7aoAE4r0YODKCmwgGJkK5QLKzQ0LCzhTrBYNaE3HpEUnAulLeyULrvvvqyw23uWzF9Wpfw==}
-    hasBin: true
-
-  '@aptrn/maxmsp-ts@file:../maxmsp-ts':
-    resolution: {directory: ../maxmsp-ts, type: directory}
     hasBin: true
 
   '@babel/code-frame@7.26.2':
@@ -1836,10 +1848,6 @@ snapshots:
       '@jridgewell/trace-mapping': 0.3.25
 
   '@aptrn/maxmsp-ts@0.0.1':
-    dependencies:
-      chokidar: 4.0.3
-
-  '@aptrn/maxmsp-ts@file:../maxmsp-ts':
     dependencies:
       chokidar: 4.0.3
 
