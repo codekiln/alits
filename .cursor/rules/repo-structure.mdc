@@ -1,0 +1,54 @@
+---
+description: structure of the repository
+globs: 
+---
+
+# Monorepo Structure
+
+This monorepo is a TypeScript-based project that includes multiple applications and packages
+
+## Root-Level Files and Directories
+- **Configuration & Tooling**
+  - `.changeset/`: Contains Changeset configuration and metadata for versioning.
+  - `.cursor/rules/`: Rules for CursorAI.
+  - `.devcontainer/`: Development container configuration.
+  - `.github/`: GitHub Actions workflows and Dependabot configuration.
+  - `.vscode/`: VSCode workspace settings.
+  - `.dockerignore`, `.gitignore`, `.npmrc`, `.prettierrc`, `.eslintrc.js`: Various ignore and linting configurations.
+  - `gh/*` - cached GitHub issues and their Merge Request descriptions. Created using the GitHub CLI, `gh`. 
+  - `Dockerfile`, `docker-compose.yml`: Docker-related files.
+  - `pnpm-lock.yaml`, `pnpm-workspace.yaml`: PNPM package manager configuration.
+  - `turbo.json`: Turborepo configuration for monorepo task running.
+
+## Applications
+- **`apps/kebricide/`**
+  - Contains a Max for Live project (`.amxd` files) and TypeScript code (`.ts` files).
+  - This is a sample application that would use `alits` library.
+  - `package.json`: Defines dependencies and scripts for this application.
+  - `tsconfig.json`: TypeScript configuration specific to this application.
+
+- **`apps/maxmsp-test/`**
+  - Includes MaxMSP patchers (`.maxpat`) and TypeScript source files.
+  - Contains a separate `package.json` and `tsconfig.json`.
+  
+## Packages (Shared Libraries)
+- **`packages/maxmsp-ts/`**
+  - A local fork of [aptrn/maxmsp-ts: CLI tool for building typescript projects and dependencies for usage in MaxMsp js object](mdc:https:/github.com/aptrn/maxmsp-ts) for compiling "regular" js references into the Cycling '74 Max/MSP js object ES5 "require" syntax 
+  - This repo is **NOT** expected to change and will eventually be used; it's a compile-time requirement **ONLY**
+
+- **`packages/my-library/`**
+  - A generic example library with TypeScript and Jest tests (`tests/example.test.ts`).
+  - Uses Rollup for bundling (`rollup.config.js`).
+  - Contains `jest.config.js` for testing.
+  - in [issue23-create-alits-core-pkg.md](mdc:gh/issue23-create-alits-core-pkg.md), will be renamed
+
+## GitHub Issues & Documentation
+- **`gh/`**
+  - Contains GitHub issue markdown files created with the GitHub CLI `gh` documenting changes and tasks related to the monorepo.
+  - Examples: `gh/issue23-create-alits-core-pkg.md`, `gh/issue20-pull-maxmsp-ts-into-monorepo-until-original-is-compatible.md`
+  - If the current branch name contains `issue23` and there's a file in `gh/issue23...md`, there's a good chance that's the active issue.
+
+## Summary
+This monorepo uses `pnpm` as the package manager and `turbo` for task orchestration. The `apps/` directory contains standalone applications, while `packages/` hosts reusable libraries. The root directory includes configurations for development, testing, and deployment.
+
+

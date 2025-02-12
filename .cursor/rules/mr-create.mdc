@@ -1,0 +1,11 @@
+---
+description: Create a merge request from an already-created merge request description using the GitHub CLI
+globs: 
+---
+
+# Use the GitHub CLI to create a Merge Request
+- Use [current-task.mdc](mdc:.cursor/rules/current-task.mdc) to find the current task.
+- The [mr-description.mdc](mdc:.cursor/rules/mr-description.mdc) for the current task should already be created in `gh/issue<IssueNum>-MR-<IssueDescription>.md`
+- use `gh pr create --title "Your PR title" --body-file path/to/your/description.md`
+  - here `Your PR title` should be the title of the issue as inferred from the issue description
+  - the body file should be the current task's Merge Request description file

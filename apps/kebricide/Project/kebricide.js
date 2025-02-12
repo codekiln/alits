@@ -1,10 +1,10 @@
 "use strict";
-var mylib = require("myLibrary_index.js");
+var mylib = require("alits_index.js");
 inlets = 1;
 outlets = 1;
 autowatch = 1;
 function bang() {
-    post("is this working x2? " + mylib.greet() + "\n");
+    post("is this working x3? " + mylib.greet() + "\n");
 }
 bang();
 // .ts files with this at the end become a script usable in a [js] or [jsui] object

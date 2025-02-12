@@ -1,11 +1,11 @@
-import * as mylib from "@my-username/my-library";
+import * as mylib from "@alits/core";
 
 inlets = 1;
 outlets = 1;
 autowatch = 1;
 
 function bang() {
-  post("is this working x2? " + mylib.greet() + "\n");
+  post("is this working x3? " + mylib.greet() + "\n");
 }
 
 bang();
