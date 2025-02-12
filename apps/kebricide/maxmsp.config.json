@@ -1,8 +1,8 @@
 {
   "output_path": "",
   "dependencies": {
-    "@my-username/my-library": {
-      "alias": "myLibrary",
+    "@alits/core": {
+      "alias": "alits",
       "files": ["index.js"],
       "path": ""
     }
