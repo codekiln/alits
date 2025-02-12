@@ -1,0 +1,13 @@
+---
+description: Create a Merge Request (MR) description
+globs: 
+---
+
+# Create a Merge Request Description
+- primary job: create a GitHub Merge Request description which should close the current task
+- Use [current-task.mdc](mdc:.cursor/rules/current-task.mdc) or the supplied task context file to find the current GitHub issue being worked on. 
+  - it will be describe in a markdown file in the `gh/*` directory named after the issue
+    - for example, `gh/issue22-<IssueDescription>.md` (note `issue22` is not the current task, this is just an example)
+- Create a markdown file next to the current task's file in the `gh/` directory, name it after the current task file but with a `-MR-` in the middle of the filename for Merge Request
+  - name it according to the schema `gh/issue<IssueNum>-MR-<IssueDescription>.md`, where `IssueNum` and `IssueDescription` are the same as the current issue  
+- Following [markdown-output.mdc](mdc:.cursor/rules/markdown-output.mdc), and using the diff with the main branch, put a merge request description in that will close the github issue
