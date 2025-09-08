@@ -1,3 +1,5 @@
+cgpt-link:: [Alits - Ableton Live Typescript - LOM typescript wrapper order](https://chatgpt.com/g/g-p-68be88fc18f48191b0eebdcda2fc48b3-alits-ableton-live-typescript/c/68bea6a8-be40-832a-ad94-3f124866ff3e) 
+
 ### **Phase 1: Roots & Global Objects**
 
 1. **[Application](https://docs.cycling74.com/legacy/max8/vignettes/live_object_model#live_obj_anchor_Application)**
