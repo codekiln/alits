@@ -1,4 +1,5 @@
 tags:: Idea, Typescript, [[c74/M4L]]
+logseq-url:: logseq://graph/logseq-encode-garden?page=c74%2FM4L%2FIdea%2FAlits
 
 - # #Alits - #Ableton Live #Typescript #API
 	- Alits stands for **A**bleton **Li**ve **T**ype**S**cript - it's an idiomatic, [[Functional Reactive Programming]] typescript library for Ableton Live.
