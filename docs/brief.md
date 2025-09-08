@@ -351,3 +351,36 @@ Each phase is considered complete when:
 - Phase-based approach allows for iterative improvement based on user feedback
 - Each phase builds naturally on the previous phase's foundation
 
+## MVP Scope
+
+**Core Features (Must Have):**
+- **Phase 1 & 2 Components**: Application, Song, Song.View, Track, Track.View, Scene, Scene.ClipSlots
+- **Type-Safe Property Access**: Methods like `get_name()`, `get_color()`, `set_mute()` with proper TypeScript types
+- **Observable Property Observation**: RxJS-based property observation methods like `observe_color()` returning Observables
+- **IDE Autocomplete Support**: Full TypeScript definitions enabling IntelliSense for all implemented components
+- **Component Analysis Documentation**: Analysis files for each implemented component following the AI Coding Methodology
+- **Basic Test Suite**: Unit tests for core functionality demonstrating the API works
+- **Max 8 Compatibility**: Full compatibility with Max 8 Live Object Model API
+- **Core Library Structure**: `alits-core` and `alits-tracks` libraries with proper modular architecture
+
+**Out of Scope for MVP:**
+- Clip layer (ClipSlot, Clip, Clip.View) - Phase 3
+- Device layer (Device, DeviceParameters) - Phase 4
+- Advanced devices (RackDevice, DrumChain, etc.) - Phase 5
+- Specialized components (CuePoint, GroovePool, TuningSystem)
+- Control Surface integration
+- Advanced error handling and logging
+- Documentation website
+- NPM package publishing
+- Community contribution workflows
+
+**MVP Success Criteria:**
+The MVP is successful when a developer can:
+1. Create a TypeScript Max for Live device that uses Alits
+2. Access Song and Track properties with full IDE autocomplete support
+3. Observe Track color changes using Observable patterns
+4. Manipulate Scene properties with type-safe methods
+5. Build a functional device that demonstrates the core concept works
+6. Use AI coding assistants effectively with the TypeScript API
+7. Import only the libraries they need (`alits-core`, `alits-tracks`)
+
