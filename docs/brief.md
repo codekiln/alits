@@ -374,6 +374,16 @@ Each phase is considered complete when:
 - NPM package publishing
 - Community contribution workflows
 
+**AI Coding Workflow & Standards (MVP Critical):**
+The MVP must establish the foundation for autonomous AI-assisted development of each component:
+
+- **Component Analysis Template**: Standardized markdown template for documenting each Live Object Model component before implementation
+- **Coding Standards Document**: TypeScript coding conventions, naming patterns, and architectural guidelines that AI assistants can follow
+- **AI Coding Workflow**: Step-by-step process for using AI assistants to implement each component autonomously
+- **Testing Standards**: Unit test patterns and coverage requirements that ensure AI-generated code meets quality standards
+- **Documentation Standards**: How to write analysis files that provide AI assistants with the focused context they need
+- **Code Review Process**: How to validate AI-generated code against Live Object Model requirements and project standards
+
 **MVP Success Criteria:**
 The MVP is successful when a developer can:
 1. Create a TypeScript Max for Live device that uses Alits
@@ -383,4 +393,6 @@ The MVP is successful when a developer can:
 5. Build a functional device that demonstrates the core concept works
 6. Use AI coding assistants effectively with the TypeScript API
 7. Import only the libraries they need (`alits-core`, `alits-tracks`)
+8. **Follow established AI coding workflow to implement new components autonomously**
+9. **Apply coding standards consistently across all AI-generated code**
 
