@@ -1,6 +1,7 @@
 ---
 description: Create a Merge Request (MR) description
 globs: 
+alwaysApply: false
 ---
 
 # Create a Merge Request Description

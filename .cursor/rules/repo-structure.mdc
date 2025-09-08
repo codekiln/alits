@@ -15,7 +15,7 @@ This monorepo is a TypeScript-based project that includes multiple applications 
   - `.github/`: GitHub Actions workflows and Dependabot configuration.
   - `.vscode/`: VSCode workspace settings.
   - `.dockerignore`, `.gitignore`, `.npmrc`, `.prettierrc`, `.eslintrc.js`: Various ignore and linting configurations.
-  - `gh/*` - cached GitHub issues and their Merge Request descriptions. Created using the GitHub CLI, `gh`. 
+  - `gh/*` - cached GitHub issues and their Merge Request descriptions. Files created using the GitHub CLI, `gh`. 
   - `Dockerfile`, `docker-compose.yml`: Docker-related files.
   - `pnpm-lock.yaml`, `pnpm-workspace.yaml`: PNPM package manager configuration.
   - `turbo.json`: Turborepo configuration for monorepo task running.

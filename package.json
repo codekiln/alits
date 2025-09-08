@@ -8,7 +8,10 @@
     "test": "turbo test",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "maxmsp": "turbo maxmsp",
-    "release": "changeset publish"
+    "release": "changeset publish",
+    "bmad:refresh": "bmad-method install -f -i codex",
+    "bmad:list": "bmad-method list:agents",
+    "bmad:validate": "bmad-method validate"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.9",

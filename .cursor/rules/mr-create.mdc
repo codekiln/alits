@@ -1,6 +1,7 @@
 ---
 description: Create a merge request from an already-created merge request description using the GitHub CLI
 globs: 
+alwaysApply: false
 ---
 
 # Use the GitHub CLI to create a Merge Request
