@@ -396,3 +396,45 @@ The MVP is successful when a developer can:
 8. **Follow established AI coding workflow to implement new components autonomously**
 9. **Apply coding standards consistently across all AI-generated code**
 
+## Technical Requirements & Constraints
+
+**Core Technical Requirements:**
+- **TypeScript 5.6+**: Modern TypeScript features for advanced type safety and developer experience
+- **RxJS 7.0+**: Observable-based reactive programming for property observation
+- **Max for Live API Compatibility**: Full compatibility with Max 8 Live Object Model API
+- **Node.js 22+**: Modern JavaScript runtime for development and testing (as specified in Dockerfile)
+- **ES Modules**: Modern module system for clean imports and tree-shaking
+
+**Monorepo Infrastructure:**
+- **Turborepo**: High-performance build system for monorepo management
+- **pnpm**: Fast, disk space efficient package manager with workspace support
+- **Rollup**: Module bundler for creating optimized packages with tree-shaking
+- **Jest**: Testing framework for unit tests and component validation
+- **Prettier**: Code formatting for consistent style across all packages
+- **Changesets**: Version management and publishing workflow for packages
+
+**Development Environment Requirements:**
+- **Dev Containers**: Docker-based development environment with VS Code integration
+- **Ableton Live 11+**: Target environment for Max for Live device development
+- **Max 8**: Required for Live Object Model API access
+- **VS Code**: Primary IDE with TypeScript support and dev container integration
+- **Git**: Version control for collaborative development
+
+**Package Architecture:**
+- **Modular Packages**: Separate packages for different Live Object Model components (`@alits/core`, `@alits/tracks`, etc.)
+- **Scoped NPM Packages**: `@alits/*` namespace for package organization
+- **Dual Module Support**: Both CommonJS and ES Module outputs for maximum compatibility
+- **TypeScript Declarations**: Full `.d.ts` files for all packages
+
+**Performance Constraints:**
+- **Low Latency**: Property observation must not introduce noticeable delay
+- **Memory Efficiency**: Observable subscriptions must be properly managed to prevent leaks
+- **Bundle Size**: Modular architecture must enable tree-shaking for minimal bundle sizes
+- **Build Performance**: Turborepo caching must enable fast incremental builds
+
+**Compatibility Constraints:**
+- **Max 8 API Only**: Focus exclusively on Max 8 Live Object Model, not Max 9
+- **TypeScript Only**: No JavaScript fallback - TypeScript is required for type safety
+- **Node.js 18+**: Minimum Node.js version for development (as specified in package.json engines)
+- **Modern Browsers**: ES2020+ support for development tools and documentation
+
