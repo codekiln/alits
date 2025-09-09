@@ -124,7 +124,7 @@ A Max for Live MIDI effect device that automatically renames each Drum Pad to th
 **Detailed Analysis:**
 For comprehensive implementation details, see:
 - **[Classical Max for Live Implementation](./brief-M4L-drum-key-remapper-classical-example.md)** - Complete step-by-step guide for building this device using current Max for Live JavaScript API
-- **[Alits Implementation](./brief-m4l-drum-key-remapper-alits-example.md)** - Same device reimagined using the proposed Alits TypeScript library
+- **[Alits Implementation](./brief-M4L-drum-key-remapper-alits-example.md)** - Same device reimagined using the proposed Alits TypeScript library
 
 #### Classical Max for Live Implementation (Current State)
 
@@ -271,6 +271,67 @@ Alits transforms this by providing:
 - **Alits**: Familiar TypeScript patterns, modern async/await, Observable-based reactive programming
 
 This transformation enables developers to focus on creative problem-solving rather than fighting with the underlying API, while making the entire Live Object Model accessible to AI coding assistants for the first time.
+
+### Observability and Reactive Programming with RxJS
+
+A key differentiator of Alits is its integration with RxJS to provide Observable-based reactive programming patterns for the Live Object Model. This transforms the callback-heavy Max for Live API into a modern, stream-based approach that aligns with contemporary TypeScript development practices.
+
+#### Reactive Property Observation
+
+Instead of the classical callback-based approach:
+```javascript
+// Classical Max for Live - callback-based observation
+const track = new LiveAPI((args) => {
+  const argsArray = arrayfromargs(args);
+  console.log('Track color changed:', argsArray[1]);
+}, "live_set tracks 0");
+track.property = 'color';
+```
+
+Alits provides Observable-based property observation:
+```typescript
+// Alits - Observable-based reactive programming
+track.observe_color().subscribe(newColor => {
+  console.log('Track color changed:', newColor);
+});
+
+// Multiple property observations with RxJS operators
+combineLatest([
+  track.observe_color(),
+  track.observe_mute(),
+  track.observe_volume()
+]).subscribe(([color, mute, volume]) => {
+  updateTrackDisplay({ color, mute, volume });
+});
+```
+
+#### Generalized Observability Framework
+
+Alits includes a systematic approach to exposing all Live Object Model observable properties as RxJS streams, enabling:
+
+- **Automatic Property Streaming**: Any Live Object Model property that supports observation becomes an Observable
+- **RxJS Operator Integration**: Use `map`, `filter`, `debounce`, `combineLatest`, and other operators for complex reactive logic
+- **Memory Management**: Automatic subscription cleanup and resource management
+- **Type Safety**: Observable streams maintain full TypeScript type information
+
+#### Real-World Reactive Applications
+
+The reactive capabilities enable sophisticated applications that automatically respond to Live Object Model changes:
+
+- **Live Dashboard**: Real-time updates of track states, clip positions, and device parameters
+- **Automated Workflows**: Trigger actions based on complex combinations of Live events
+- **Performance Monitoring**: Stream-based analysis of Live performance metrics
+- **Dynamic UI**: Reactive interfaces that update automatically as Live state changes
+
+**Detailed Analysis:**
+For comprehensive coverage of Alits' observability and RxJS integration, including implementation patterns, utility functions, and advanced reactive programming techniques, see:
+
+**[Observability and RxJS Integration](./brief-M4L-observability-and-rxjs.md)** - Complete guide covering:
+- Generalized Observable property observation framework
+- RxJS operator integration patterns
+- Memory management and subscription cleanup
+- Advanced reactive programming techniques for Live Object Model
+- Real-world examples of reactive Max for Live applications
 
 ### AI Coding Methodology
 
