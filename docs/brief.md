@@ -486,6 +486,61 @@ This methodology ensures that AI coding assistants have the focused, accurate co
 - **Developer Experience**: Positive feedback on IDE autocomplete and type safety features
 - **Error Reduction**: Measurable reduction in type-related runtime errors
 
+## Package Architecture & Development Timeline
+
+**Complete Package Ecosystem:**
+
+Alits will be delivered as a comprehensive ecosystem of focused TypeScript packages, each targeting specific aspects of the Live Object Model. The packages are organized into three categories: Core Libraries, Infrastructure Packages, and Specialized Libraries.
+
+### **Core Libraries (Live Object Model Components)**
+
+**Foundation Packages:**
+- **`@alits/core`** - Foundation objects (Application, Application.View, Song, Song.View)
+- **`@alits/tracks`** - Track layer (Track, Track.View, Track.ClipSlots, Track.Devices, Track.ArrangementClips)
+- **`@alits/scenes`** - Scene management (Scene, Scene.ClipSlots)
+- **`@alits/clips`** - Clip layer (ClipSlot, Clip, Clip.View)
+
+**Device Packages:**
+- **`@alits/devices`** - Base device functionality (Device, Device.View, Device.Parameters, DeviceIO)
+- **`@alits/racks`** - Rack devices (RackDevice, RackDevice.View, Chain, ChainMixerDevice)
+- **`@alits/drums`** - Drum rack functionality (DrumChain, DrumPad, DrumCellDevice)
+- **`@alits/simpler`** - Simpler device (SimplerDevice, SimplerDevice.View, Sample)
+- **`@alits/stock-devices`** - Common stock devices (Eq8Device, CompressorDevice, WavetableDevice, PluginDevice)
+
+**Specialized Packages:**
+- **`@alits/control-surface`** - Control surface integration (ControlSurface)
+- **`@alits/cue-points`** - Cue point management (CuePoint)
+- **`@alits/groove`** - Groove functionality (GroovePool, Groove)
+- **`@alits/tuning`** - Tuning system (TuningSystem)
+
+### **Infrastructure Packages (Development Support)**
+
+**Development Tools:**
+- **`@alits/test-utils`** - Shared testing utilities, mock LiveAPI implementations, test data factories
+- **`@alits/logging`** - Centralized logging utility with Max console integration
+- **`@alits`** - Meta-package that references the entire collection for convenience imports
+
+### **Package Dependencies & Boundaries**
+
+**Dependency Hierarchy:**
+```
+@alits/core (foundation)
+├── @alits/tracks (depends on core)
+├── @alits/scenes (depends on core)
+├── @alits/clips (depends on core, tracks)
+├── @alits/devices (depends on core)
+├── @alits/racks (depends on core, devices)
+├── @alits/drums (depends on core, devices, racks)
+├── @alits/simpler (depends on core, devices)
+├── @alits/stock-devices (depends on core, devices)
+└── Specialized packages (depend on relevant core packages)
+
+Infrastructure packages:
+├── @alits/test-utils (used by all packages)
+├── @alits/logging (used by all packages)
+└── @alits (meta-package, depends on all)
+```
+
 ## Project Phases
 
 **Phase-Based Implementation Strategy:**
@@ -493,9 +548,10 @@ Alits will be implemented in phases following the Live Object Model hierarchy, s
 
 **Phase 1: Foundation (Months 1-2)**
 - **Core Objects**: Application, Song, Song.View
+- **Infrastructure Packages**: `@alits/test-utils`, `@alits/logging`
 - **Basic Infrastructure**: TypeScript project setup, RxJS integration, testing framework
 - **AI Coding Methodology**: Establish analysis file templates and documentation standards
-- **Deliverable**: Basic Live Set access with type-safe properties
+- **Deliverable**: Basic Live Set access with type-safe properties + development infrastructure
 
 **Phase 2: Track & Scene Basics (Months 2-3)**
 - **Track Layer**: Track, Track.View, Track.ClipSlots, Track.Devices
@@ -519,36 +575,12 @@ Alits will be implemented in phases following the Live Object Model hierarchy, s
 - **Drum Racks**: DrumChain, DrumPad, DrumCellDevice
 - **Deliverable**: Complex device routing and drum rack functionality
 
-**Modular Library Architecture:**
-Following the modular approach outlined in the idea file, Alits will be structured as a collection of focused libraries grounded in the actual Live Object Model structure from the [Max 8 documentation](https://docs.cycling74.com/legacy/max8/vignettes/live_object_model):
+**Phase 6: Specialized Libraries (Months 6+)**
+- **Device Specializations**: `@alits/simpler`, `@alits/stock-devices`
+- **Advanced Features**: `@alits/control-surface`, `@alits/cue-points`, `@alits/groove`, `@alits/tuning`
+- **Meta-Package**: `@alits` convenience package
+- **Deliverable**: Complete ecosystem with specialized Live Object Model components
 
-**Core Foundation Libraries:**
-- **`alits-core`**: Foundation objects - Application, Application.View, Song, Song.View
-- **`alits-tracks`**: Track layer - Track, Track.View, Track.ClipSlots, Track.Devices, Track.ArrangementClips
-- **`alits-scenes`**: Scene management - Scene, Scene.ClipSlots
-- **`alits-clips`**: Clip layer - ClipSlot, Clip, Clip.View
-
-**Device-Specific Libraries:**
-- **`alits-devices`**: Base device functionality - Device, Device.View, Device.Parameters, DeviceIO
-- **`alits-racks`**: Rack devices - RackDevice, RackDevice.View, Chain, ChainMixerDevice
-- **`alits-drums`**: Drum rack functionality - DrumChain, DrumPad, DrumCellDevice
-- **`alits-simpler`**: Simpler device - SimplerDevice, SimplerDevice.View, Sample
-- **`alits-stock-devices`**: Common stock devices - Eq8Device, CompressorDevice, WavetableDevice, PluginDevice, etc.
-
-**Specialized Libraries:**
-- **`alits-control-surface`**: Control surface integration - ControlSurface
-- **`alits-cue-points`**: Cue point management - CuePoint
-- **`alits-groove`**: Groove functionality - GroovePool, Groove
-- **`alits-tuning`**: Tuning system - TuningSystem
-- **`alits-logging`**: Logging utilities for Ableton Live
-- **`alits`**: Meta-package that references the entire collection
-
-**Library Boundary Analysis:**
-Each library is designed around natural LOM component groupings:
-- **Core libraries** follow the hierarchical structure (Application → Song → Track → Scene → Clip)
-- **Device libraries** group by device type and complexity (base devices → racks → drums → specific devices)
-- **Specialized libraries** contain standalone or rarely-used components
-- **Boundaries minimize cross-dependencies** while maintaining logical groupings
 
 **Phase Success Criteria:**
 Each phase is considered complete when:
