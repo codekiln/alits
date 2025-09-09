@@ -78,7 +78,7 @@ A Max for Live MIDI effect device that, when placed on a track containing a Drum
   * Use `post("message")` to print debug output to the Max Console.
   * `error("message")` sends error messages in red for easier spotting.
   * Use `arrayfromargs(arguments)` to inspect callback arguments when observing properties.
-  * Avoid relying solely on `console.log` since output may not always surface in Max’s console; instead, prefer `post()` for consistent results.
+  * Avoid relying solely on `console.log` since output may not always surface in Max's console; instead, prefer `post()` for consistent results.
 * **Best Practices from JS Tutorial 3** ([JavaScript in Max Tutorial 3](https://docs.cycling74.com/legacy/max8/tutorials/javascriptchapter03)):
 
   * Separate logic into clearly named functions (`init()`, `renamePads()`) instead of putting all code into global scope.
@@ -86,5 +86,16 @@ A Max for Live MIDI effect device that, when placed on a track containing a Drum
   * Employ defensive coding: check inputs and provide meaningful error messages with `error()` when something goes wrong.
   * Keep state in global variables only when necessary; prefer encapsulation inside functions.
   * Comment liberally—especially around Live API calls and path construction—to assist debugging and future maintenance.
+
+### Testing Strategy
+
+This classical implementation would be validated through manual testing fixtures:
+
+* **Manual Testing Fixtures**: A `.amxd` device fixture in `/packages/*/tests/manual/fixtures/` exercises the complete functionality within Ableton Live's Max for Live runtime
+* **Test Scripts**: Human-readable test scripts in `/packages/*/tests/manual/scripts/` guide manual validation
+* **Result Logging**: Structured console logging using `post()` and `error()` enables semi-automated validation of test results
+* **Creation Guides**: Step-by-step guides in `/packages/*/tests/manual/creation/` document how to create the fixture device
+
+For detailed information on the manual testing fixtures approach, see **[Manual Testing Fixtures](./brief-manual-testing-fixtures.md)**.
 
 ---

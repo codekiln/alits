@@ -55,7 +55,7 @@ This document defines best practices and conventions for building the Alits Type
 
 **Monorepo Testing Architecture:**
 
-Alits uses a monorepo structure managed by Turborepo with Jest for testing. Each package maintains its own test suite while sharing common configurations and utilities.
+Alits uses a monorepo structure managed by Turborepo with Jest for testing. Each package maintains its own test suite while sharing common configurations and utilities. The testing strategy combines automated unit tests with manual testing fixtures to ensure comprehensive validation both in development and within Ableton Live's Max for Live runtime.
 
 **Package-Level Testing Configuration:**
 
@@ -138,6 +138,14 @@ Alits uses a monorepo structure managed by Turborepo with Jest for testing. Each
     * Validation of method behavior and return values.
     * Observable emission patterns and subscription management.
     * Error handling and edge cases.
+
+* **Manual Testing Fixtures**
+
+  * Complement automated tests with manual testing fixtures that exercise features within Ableton Live's Max for Live runtime.
+  * Store fixtures within each package at `/packages/*/tests/manual/` directory.
+  * Include `.amxd` device files, creation guides, test scripts, and result logs.
+  * Enable semi-automated validation through structured console logging and log export analysis.
+  * **Location**: `/packages/*/tests/manual/` (within each package)
 * **Mocking LiveAPI**
 
   * Provide comprehensive test doubles that simulate LiveAPI callbacks.
@@ -170,8 +178,9 @@ Alits uses a monorepo structure managed by Turborepo with Jest for testing. Each
   * Focus on testing component interactions within the Alits ecosystem.
 * **Test Organization**
 
-  * Co-locate test files with source code (`Component.ts` → `Component.test.ts`)
-  * Use `__tests__` directories for complex test suites
+  * **Automated Tests**: Co-locate test files with source code within each package (`packages/*/src/Component.ts` → `packages/*/tests/Component.test.ts`)
+  * Use `__tests__` directories for complex test suites within packages
+  * **Manual Testing Fixtures**: Store within each package at `packages/*/tests/manual/` directory
   * Maintain test utilities in shared `test-utils` package
 * **Coverage Requirements**
 
@@ -321,6 +330,7 @@ Alits is organized as a monorepo using Turborepo for efficient build orchestrati
   * Test data factories
   * Observable testing helpers
   * TypeScript assertion utilities
+  * Manual testing fixture support and utilities
 
 * **Integration Testing**: Test cross-package interactions:
   * Core → Tracks integration
@@ -340,7 +350,7 @@ Alits is organized as a monorepo using Turborepo for efficient build orchestrati
 
 * Use **TypeScript-first design** with camelCase methods and explicit return types.
 * Model **observability with RxJS** streams for all `observe`-able properties.
-* Implement **comprehensive testing strategy** with Jest in a Turborepo monorepo structure.
+* Implement **comprehensive testing strategy** with Jest in a Turborepo monorepo structure, complemented by manual testing fixtures for Max for Live runtime validation.
 * Provide **systematic logging** with log levels mapped to Max console.
 * Never expose string paths externally; API should work with **Alits objects only**.
 * Follow **monorepo conventions** with consistent package structure and shared configurations.
@@ -353,5 +363,7 @@ Alits is organized as a monorepo using Turborepo for efficient build orchestrati
 * Co-located test files with source code for maintainability
 * Shared test utilities in `@alits/test-utils` package
 * Turborepo integration for parallel test execution and selective testing
+* Manual testing fixtures stored in `packages/*/tests/manual/` for Max for Live runtime validation
+* Clear separation between automated tests and manual fixtures for maintainability
 
 By following these conventions, Alits will deliver a clean, predictable developer experience that aligns with modern TypeScript practices while respecting Max for Live's unique constraints and enabling efficient AI-assisted development in a scalable monorepo architecture.

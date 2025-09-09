@@ -130,3 +130,14 @@ With Alits, this device could easily evolve:
 ### Summary
 
 The **Drum Key Remapper** under Alits becomes a concise, type-safe, and reactive device. What was once a brittle, string-based exercise in LiveAPI JS becomes a modern, maintainable TypeScript application aligned with developer expectations in 2025.
+
+### Testing Strategy
+
+This device would be validated through both automated unit tests and manual testing fixtures:
+
+* **Automated Tests**: Unit tests with mocked LiveAPI validate TypeScript API design and method behavior
+* **Manual Testing Fixtures**: A `.amxd` device fixture in `/packages/*/tests/manual/fixtures/` exercises the complete functionality within Ableton Live's Max for Live runtime
+* **Test Scripts**: Human-readable test scripts in `/packages/*/tests/manual/scripts/` guide manual validation
+* **Result Logging**: Structured console logging enables semi-automated validation of test results
+
+For detailed information on the manual testing fixtures approach, see **[Manual Testing Fixtures](./brief-manual-testing-fixtures.md)**.

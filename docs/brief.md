@@ -361,6 +361,7 @@ To solve this bootstrapping problem, we will implement Alits using a systematic,
    - Create comprehensive test suites for each component before implementation
    - Tests will validate both the TypeScript API design and the underlying Max for Live API integration
    - Test files will serve as additional documentation and examples for AI assistants
+   - **Manual Testing Fixtures**: Complement automated tests with manual testing fixtures that exercise features within Ableton Live's Max for Live runtime
 
 4. **AI Assistant Context Building**:
    - Each analysis file provides focused context about one component's behavior and relationships
@@ -481,7 +482,7 @@ This methodology ensures that AI coding assistants have the focused, accurate co
 - **Active Developers**: 3+ developers actively using Alits for Max for Live development
 - **Non-coder Success**: 1+ non-coder successfully building Live interfaces with AI coding tools
 - **Documentation Quality**: Analysis files created for all implemented components
-- **Test Coverage**: Comprehensive test suites for implemented components
+- **Test Coverage**: Comprehensive test suites for implemented components (automated + manual fixtures)
 - **AI Coding Success**: AI assistants can effectively help with Live Object Model implementation
 - **Developer Experience**: Positive feedback on IDE autocomplete and type safety features
 - **Error Reduction**: Measurable reduction in type-related runtime errors
@@ -516,7 +517,7 @@ Alits will be delivered as a comprehensive ecosystem of focused TypeScript packa
 ### **Infrastructure Packages (Development Support)**
 
 **Development Tools:**
-- **`@alits/test-utils`** - Shared testing utilities, mock LiveAPI implementations, test data factories
+- **`@alits/test-utils`** - Shared testing utilities, mock LiveAPI implementations, test data factories, manual testing fixture support
 - **`@alits/logging`** - Centralized logging utility with Max console integration
 - **`@alits`** - Meta-package that references the entire collection for convenience imports
 
@@ -549,7 +550,7 @@ Alits will be implemented in phases following the Live Object Model hierarchy, s
 **Phase 1: Foundation (Months 1-2)**
 - **Core Objects**: Application, Song, Song.View
 - **Infrastructure Packages**: `@alits/test-utils`, `@alits/logging`
-- **Basic Infrastructure**: TypeScript project setup, RxJS integration, testing framework
+- **Basic Infrastructure**: TypeScript project setup, RxJS integration, testing framework (automated + manual fixtures)
 - **AI Coding Methodology**: Establish analysis file templates and documentation standards
 - **Deliverable**: Basic Live Set access with type-safe properties + development infrastructure
 
@@ -586,7 +587,7 @@ Alits will be implemented in phases following the Live Object Model hierarchy, s
 Each phase is considered complete when:
 1. All planned components have TypeScript classes with full type definitions
 2. Analysis files are created for each component following AI Coding Methodology
-3. Comprehensive test suites demonstrate functionality
+3. Comprehensive test suites demonstrate functionality (automated + manual fixtures)
 4. Observable patterns are implemented for all observable properties
 5. IDE autocomplete works correctly for all implemented features
 6. AI coding assistants can effectively help with component implementation
@@ -612,7 +613,7 @@ Each phase is considered complete when:
 - **Observable Property Observation**: RxJS-based property observation methods like `observe_color()` returning Observables
 - **IDE Autocomplete Support**: Full TypeScript definitions enabling IntelliSense for all implemented components
 - **Component Analysis Documentation**: Analysis files for each implemented component following the AI Coding Methodology
-- **Basic Test Suite**: Unit tests for core functionality demonstrating the API works
+- **Basic Test Suite**: Unit tests for core functionality demonstrating the API works, plus manual testing fixtures for Max for Live runtime validation
 - **Max 8 Compatibility**: Full compatibility with Max 8 Live Object Model API
 - **Core Library Structure**: `alits-core` and `alits-tracks` libraries with proper modular architecture
 
@@ -633,7 +634,7 @@ The MVP must establish the foundation for autonomous AI-assisted development of 
 - **Component Analysis Template**: Standardized markdown template for documenting each Live Object Model component before implementation
 - **Coding Standards Document**: TypeScript coding conventions, naming patterns, and architectural guidelines that AI assistants can follow
 - **AI Coding Workflow**: Step-by-step process for using AI assistants to implement each component autonomously
-- **Testing Standards**: Unit test patterns and coverage requirements that ensure AI-generated code meets quality standards
+- **Testing Standards**: Unit test patterns and coverage requirements that ensure AI-generated code meets quality standards, plus manual testing fixture creation and validation workflows
 - **Documentation Standards**: How to write analysis files that provide AI assistants with the focused context they need
 - **Code Review Process**: How to validate AI-generated code against Live Object Model requirements and project standards
 
@@ -662,7 +663,7 @@ Alits follows strict coding conventions designed to ensure consistency across AI
 - **RxJS Integration**: Observable-based property observation for all Live Object Model properties with `observe` access
 - **Async/Await Patterns**: Asynchronous getters and setters return Promises, avoiding callback-style APIs
 - **Systematic Logging**: Centralized logging utility with levels (debug, info, warn, error) integrated with Max console
-- **Unit Testing Focus**: Comprehensive unit tests with mocked LiveAPI, limited integration testing due to M4L constraints
+- **Unit Testing Focus**: Comprehensive unit tests with mocked LiveAPI, limited integration testing due to M4L constraints, complemented by manual testing fixtures for runtime validation
 
 **AI Coding Workflow Standards:**
 
@@ -685,7 +686,7 @@ For comprehensive coding conventions, architectural guidelines, and AI coding wo
 **[Coding Conventions & Standards](./brief-coding-conventions.md)** - Complete guide covering:
 - TypeScript naming conventions and type safety requirements
 - RxJS integration patterns and Observable design principles
-- Testing strategy with mocked LiveAPI and unit test patterns
+- Testing strategy with mocked LiveAPI and unit test patterns, plus manual testing fixtures for Max for Live runtime validation
 - Logging conventions with Max console integration
 - API parameter design and object-oriented wrapping principles
 - AI coding workflow standards for autonomous component implementation

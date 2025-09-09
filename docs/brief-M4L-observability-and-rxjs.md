@@ -165,4 +165,15 @@ With Alits, this device could easily evolve:
 
 ### Summary
 
-The **Drum Key Remapper** under Alits becomes a concise, type-safe, and reactive device. What was once a brittle, string-based exercise in LiveAPI JS becomes a modern, maintainable TypeScript application aligned with developer expectations in 2025. By including a **generalized RxJS observability helper**, Alits can systematically expose the entire Live Object Model’s observable properties as reactive streams.
+The **Drum Key Remapper** under Alits becomes a concise, type-safe, and reactive device. What was once a brittle, string-based exercise in LiveAPI JS becomes a modern, maintainable TypeScript application aligned with developer expectations in 2025. By including a **generalized RxJS observability helper**, Alits can systematically expose the entire Live Object Model's observable properties as reactive streams.
+
+### Testing Strategy
+
+The reactive capabilities of this device would be validated through both automated unit tests and manual testing fixtures:
+
+* **Automated Tests**: Unit tests with mocked LiveAPI validate Observable patterns, RxJS operator integration, and subscription management
+* **Manual Testing Fixtures**: A `.amxd` device fixture in `/packages/*/tests/manual/fixtures/` exercises reactive property observation within Ableton Live's Max for Live runtime
+* **Test Scripts**: Human-readable test scripts in `/packages/*/tests/manual/scripts/` guide manual validation of reactive behavior
+* **Result Logging**: Structured console logging enables semi-automated validation of Observable emissions and reactive patterns
+
+For detailed information on the manual testing fixtures approach, see **[Manual Testing Fixtures](./brief-manual-testing-fixtures.md)**.
