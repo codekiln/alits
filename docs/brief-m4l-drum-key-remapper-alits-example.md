@@ -19,10 +19,10 @@ Alits provides a modern, type-safe, Observable-based API to the Ableton Live Obj
 #### 1. Device Setup
 
 * Create a Max for Live MIDI Effect.
-* In the device’s TypeScript entrypoint, import the relevant Alits modules:
+* In the device's TypeScript entrypoint, import the relevant Alits modules:
 
   ```ts
-  import { LiveSet, Track, RackDevice, DrumPad } from 'alits';
+  import { LiveSet, Track, RackDevice, DrumPad } from '@alits/core';
   ```
 * Initialization happens in an async `init()` function once the device is loaded.
 
@@ -36,13 +36,13 @@ Alits provides a modern, type-safe, Observable-based API to the Ableton Live Obj
 * Get the track hosting this device:
 
   ```ts
-  const track = await liveSet.get_track_for_this_device();
+  const track = await liveSet.getTrackForThisDevice();
   ```
 * Query its devices directly as strongly typed objects:
 
   ```ts
-  const devices = await track.get_devices();
-  const drumRack = devices.find(d => d instanceof RackDevice && d.is_drum_rack());
+  const devices = await track.getDevices();
+  const drumRack = devices.find(d => d instanceof RackDevice && d.isDrumRack());
   ```
 
 #### 3. Drum Pad Access
@@ -50,7 +50,7 @@ Alits provides a modern, type-safe, Observable-based API to the Ableton Live Obj
 * Retrieve Drum Pads with a clear method:
 
   ```ts
-  const pads: DrumPad[] = await drumRack.get_drum_pads();
+  const pads: DrumPad[] = await drumRack.getDrumPads();
   ```
 * Each pad object has typed properties and methods (no manual path building).
 
@@ -59,7 +59,7 @@ Alits provides a modern, type-safe, Observable-based API to the Ableton Live Obj
 * Check whether the pad is empty via a boolean:
 
   ```ts
-  if (!(await pad.has_chain())) continue;
+  if (!(await pad.hasChain())) continue;
   ```
 
 #### 5. MIDI Note Identification
@@ -67,7 +67,7 @@ Alits provides a modern, type-safe, Observable-based API to the Ableton Live Obj
 * Retrieve the note assignment directly:
 
   ```ts
-  const noteNumber: number = await pad.get_note();
+  const noteNumber: number = await pad.getNote();
   const noteName: string = midiNoteToName(noteNumber);
   ```
 
@@ -78,30 +78,30 @@ Alits provides a modern, type-safe, Observable-based API to the Ableton Live Obj
 * Set the pad name with full type safety:
 
   ```ts
-  await pad.set_name(noteName);
+  await pad.setName(noteName);
   ```
 
 #### 7. Full Algorithm
 
 1. Wait for device initialization.
-2. Get parent track of the device with `get_track_for_this_device()`.
+2. Get parent track of the device with `getTrackForThisDevice()`.
 3. Find its Drum Rack device.
 4. Get Drum Pads from the rack.
 5. For each pad:
 
-   * Skip if `has_chain()` returns false.
+   * Skip if `hasChain()` returns false.
    * Retrieve assigned MIDI note.
    * Convert note number to note name.
-   * Rename pad using `set_name()`.
+   * Rename pad using `setName()`.
 
 ---
 
 ### Key Differences vs. Classical JS Implementation
 
-* **No String Paths**: Instead of `"live_set tracks 0 devices 2 drum_pads 5"`, Alits provides `track.get_devices()` → `drumRack.get_drum_pads()`.
-* **Type Safety**: Methods like `pad.get_note()` and `pad.set_name()` have explicit return/argument types.
+* **No String Paths**: Instead of `"live_set tracks 0 devices 2 drum_pads 5"`, Alits provides `track.getDevices()` → `drumRack.getDrumPads()`.
+* **Type Safety**: Methods like `pad.getNote()` and `pad.setName()` have explicit return/argument types.
 * **Async/Await**: Promises replace callbacks, making sequencing easier.
-* **Observables**: Pad properties (e.g. `observe_name()`) can be subscribed to with RxJS.
+* **Observables**: Pad properties (e.g. `observeName()`) can be subscribed to with RxJS.
 * **Error Handling**: Invalid objects throw typed errors instead of requiring manual `id/info` validation.
 * **IDE Support**: Autocomplete and inline docs available in TypeScript-aware IDEs.
 
@@ -122,7 +122,7 @@ Alits provides a modern, type-safe, Observable-based API to the Ableton Live Obj
 With Alits, this device could easily evolve:
 
 * Automatically update pad names when a new sample is dropped.
-* Provide reactive logging: `pad.observe_note().subscribe(...)`.
+* Provide reactive logging: `pad.observeNote().subscribe(...)`.
 * Integrate with a front-end (e.g., a React panel) for pad overview.
 
 ---

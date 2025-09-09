@@ -76,31 +76,31 @@ track.property = 'color';
 **Proposed Alits API (Solution):**
 ```typescript
 // Modern TypeScript approach - type-safe, Observable-based, intuitive
-import { LiveSet, Track, Clip } from 'alits';
+import { LiveSet, Track, Clip } from '@alits/core';
 
 const liveSet = new LiveSet();
-const track = await liveSet.get_track(0);
+const track = await liveSet.getTrack(0);
 
 // Type-safe property access with autocomplete
-const trackName: string = await track.get_name();
-const trackColor: number = await track.get_color();
+const trackName: string = await track.getName();
+const trackColor: number = await track.getColor();
 
 // Observable-based property observation
-track.observe_color().subscribe(newColor => {
+track.observeColor().subscribe(newColor => {
   console.log('Track color changed:', newColor);
 });
 
 // Intuitive object relationships with full type safety
-const clips: Clip[] = await track.get_arrangement_clips();
+const clips: Clip[] = await track.getArrangementClips();
 const firstClip = clips[0];
 
 // Type-safe clip properties
-const clipName: string = await firstClip.get_name();
-const clipLength: number = await firstClip.get_length();
+const clipName: string = await firstClip.getName();
+const clipLength: number = await firstClip.getLength();
 
 // Type-safe method calls
-await firstClip.add_new_notes([
-  { pitch: 60, start_time: 0, duration: 1, velocity: 100 }
+await firstClip.addNewNotes([
+  { pitch: 60, startTime: 0, duration: 1, velocity: 100 }
 ]);
 ```
 
@@ -194,12 +194,12 @@ The same Drum Key Remapper device becomes dramatically simpler and more maintain
 **Modern Device Setup:**
 ```typescript
 // Clean imports and modern module system
-import { LiveSet, Track, RackDevice, DrumPad } from 'alits';
+import { LiveSet, Track, RackDevice, DrumPad } from '@alits/core';
 
 // Async initialization without manual bang handling
 async function init() {
   const liveSet = new LiveSet();
-  const track = await liveSet.get_track_for_this_device();
+  const track = await liveSet.getTrackForThisDevice();
   // Device ready to use
 }
 ```
@@ -207,28 +207,28 @@ async function init() {
 **Type-Safe Object Navigation:**
 ```typescript
 // Intuitive object relationships with full type safety
-const devices = await track.get_devices();
-const drumRack = devices.find(d => d instanceof RackDevice && d.is_drum_rack());
-const pads: DrumPad[] = await drumRack.get_drum_pads();
+const devices = await track.getDevices();
+const drumRack = devices.find(d => d instanceof RackDevice && d.isDrumRack());
+const pads: DrumPad[] = await drumRack.getDrumPads();
 ```
 
 **Direct Property Access:**
 ```typescript
 // Type-safe property access with autocomplete
-const trackName: string = await track.get_name();
-const trackColor: number = await track.get_color();
-const padNote: number = await pad.get_note();
+const trackName: string = await track.getName();
+const trackColor: number = await track.getColor();
+const padNote: number = await pad.getNote();
 ```
 
 **Observable-Based Reactive Programming:**
 ```typescript
 // Modern reactive patterns with RxJS
-track.observe_color().subscribe(newColor => {
+track.observeColor().subscribe(newColor => {
   console.log('Track color changed:', newColor);
 });
 
 // Automatic updates when pad contents change
-pad.observe_note().subscribe(newNote => {
+pad.observeNote().subscribe(newNote => {
   updatePadName(newNote);
 });
 ```
@@ -236,8 +236,8 @@ pad.observe_note().subscribe(newNote => {
 **Intuitive Method Calls:**
 ```typescript
 // Direct method calls with full type safety
-await pad.set_name(noteName);
-await clip.add_new_notes([{ pitch: 60, start_time: 0, duration: 1, velocity: 100 }]);
+await pad.setName(noteName);
+await clip.addNewNotes([{ pitch: 60, startTime: 0, duration: 1, velocity: 100 }]);
 ```
 
 #### Key Transformation Benefits
