@@ -617,6 +617,49 @@ The MVP is successful when a developer can:
 8. **Follow established AI coding workflow to implement new components autonomously**
 9. **Apply coding standards consistently across all AI-generated code**
 
+## Coding Conventions & Standards
+
+**Development Standards for AI-Assisted Implementation:**
+
+Alits follows strict coding conventions designed to ensure consistency across AI-generated code and maintain high code quality. These standards are critical for enabling autonomous AI-assisted development of Live Object Model components.
+
+**Core Conventions:**
+
+- **TypeScript-First Design**: All public APIs use camelCase methods with explicit return types (`Promise<T>`, `Observable<T>`)
+- **Object-Oriented Wrapping**: External API never exposes raw string paths; all functions work with Alits objects
+- **RxJS Integration**: Observable-based property observation for all Live Object Model properties with `observe` access
+- **Async/Await Patterns**: Asynchronous getters and setters return Promises, avoiding callback-style APIs
+- **Systematic Logging**: Centralized logging utility with levels (debug, info, warn, error) integrated with Max console
+- **Unit Testing Focus**: Comprehensive unit tests with mocked LiveAPI, limited integration testing due to M4L constraints
+
+**AI Coding Workflow Standards:**
+
+- **Component Analysis Documentation**: Each Live Object Model component requires a dedicated analysis file before implementation
+- **Test-Driven Development**: Unit tests created before implementation to validate TypeScript API design
+- **Consistent Naming Patterns**: PascalCase for classes, camelCase for methods, following modern TypeScript conventions
+- **Resource Management**: Proper Observable subscription cleanup and LiveAPI resource management
+
+**Quality Assurance:**
+
+- **Type Safety**: All methods must return explicit types with compile-time error checking
+- **Error Handling**: Invalid objects throw typed errors instead of requiring manual validation
+- **Documentation**: TypeScript definitions serve as living documentation for AI assistants
+- **Code Review Process**: Validation against Live Object Model requirements and project standards
+
+**Detailed Implementation Guidelines:**
+
+For comprehensive coding conventions, architectural guidelines, and AI coding workflow standards, see:
+
+**[Coding Conventions & Standards](./brief-coding-conventions.md)** - Complete guide covering:
+- TypeScript naming conventions and type safety requirements
+- RxJS integration patterns and Observable design principles
+- Testing strategy with mocked LiveAPI and unit test patterns
+- Logging conventions with Max console integration
+- API parameter design and object-oriented wrapping principles
+- AI coding workflow standards for autonomous component implementation
+
+These conventions ensure that AI coding assistants can implement Live Object Model components consistently while maintaining the high code quality standards required for a production TypeScript library.
+
 ## Technical Requirements & Constraints
 
 **Core Technical Requirements:**
