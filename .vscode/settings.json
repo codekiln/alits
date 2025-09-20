@@ -1,12 +1,8 @@
 {
-  "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
-  "editor.formatOnType": false, // required
-  "editor.formatOnPaste": true, // optional
-  "editor.formatOnSave": true, // optional
-  "editor.formatOnSaveMode": "file", // required to format on save
-  "files.autoSave": "onFocusChange", // optional but recommended
-  "vs-code-prettier-eslint.prettierLast": false,
-  "[typescript]": {
-    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
-  } // set as "true" to run 'prettier' last not first
+  "chat.agent.enabled": true,
+  "chat.agent.maxRequests": 15,
+  "github.copilot.chat.agent.runTasks": true,
+  "chat.mcp.discovery.enabled": true,
+  "github.copilot.chat.agent.autoFix": true,
+  "chat.tools.autoApprove": false
 }
