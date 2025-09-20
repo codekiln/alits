@@ -31,11 +31,11 @@ RUN corepack enable pnpm
 COPY . /app
 WORKDIR /app
 
-COPY . .
-
-# preferably, we'd do multi-stage builds here
-RUN pnpm install
-RUN pnpm build
+# Install dependencies only - don't build yet
+# First fetch dependencies (only needs pnpm-lock.yaml)
+RUN pnpm fetch
+# Then install with all files
+RUN pnpm install --offline
 
 # Fix ownership of node_modules to match the node user
 RUN chown -R node:node /app/node_modules
