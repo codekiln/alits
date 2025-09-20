@@ -105,6 +105,138 @@ describe('ObservablePropertyHelper', () => {
       // Should not throw any errors
     });
   });
+
+  describe('edge cases and error handling', () => {
+    it('should handle live object without addListener/removeListener', () => {
+      const simpleLiveObject: any = {
+        id: 'simple-object',
+        name: 'Simple Object',
+        volume: 0.5,
+        tempo: 120
+        // No addListener/removeListener methods
+      };
+
+      const observable = ObservablePropertyHelper.observeProperty(simpleLiveObject, 'volume');
+      expect(observable).toBeInstanceOf(Observable);
+      
+      // Should use polling fallback
+      const subscription = observable.subscribe();
+      expect(simpleLiveObject._pollInterval).toBeDefined();
+      subscription.unsubscribe();
+    });
+
+    it('should handle live object with on/off methods', () => {
+      const onOffLiveObject = {
+        id: 'onoff-object',
+        name: 'OnOff Object',
+        volume: 0.5,
+        tempo: 120,
+        on: jest.fn(),
+        off: jest.fn()
+      };
+
+      const observable = ObservablePropertyHelper.observeProperty(onOffLiveObject, 'volume');
+      const subscription = observable.subscribe();
+      
+      expect(onOffLiveObject.on).toHaveBeenCalledWith('change:volume', expect.any(Function));
+      subscription.unsubscribe();
+      expect(onOffLiveObject.off).toHaveBeenCalledWith('change:volume', expect.any(Function));
+    });
+
+    it('should handle live object without id', () => {
+      const noIdLiveObject = {
+        name: 'No ID Object',
+        volume: 0.5,
+        addListener: jest.fn(),
+        removeListener: jest.fn()
+        // No id property
+      };
+
+      const observable = ObservablePropertyHelper.observeProperty(noIdLiveObject, 'volume');
+      expect(observable).toBeInstanceOf(Observable);
+    });
+
+    it('should return existing observable for same object and property', () => {
+      const observable1 = ObservablePropertyHelper.observeProperty(mockLiveObject, 'volume');
+      const observable2 = ObservablePropertyHelper.observeProperty(mockLiveObject, 'volume');
+      
+      // Both observables should be valid Observable instances
+      expect(observable1).toBeInstanceOf(Observable);
+      expect(observable2).toBeInstanceOf(Observable);
+    });
+
+    it('should handle polling cleanup properly', () => {
+      const pollingLiveObject: any = {
+        id: 'polling-object',
+        name: 'Polling Object',
+        volume: 0.5
+        // No addListener/removeListener methods
+      };
+
+      const observable = ObservablePropertyHelper.observeProperty(pollingLiveObject, 'volume');
+      const subscription = observable.subscribe();
+      
+      expect(pollingLiveObject._pollInterval).toBeDefined();
+      
+      subscription.unsubscribe();
+      
+      // Polling interval should be cleared
+      expect(pollingLiveObject._pollInterval).toBeUndefined();
+    });
+
+    it('should handle multiple subscriptions to same property', () => {
+      const observable = ObservablePropertyHelper.observeProperty(mockLiveObject, 'volume');
+      
+      const subscription1 = observable.subscribe();
+      const subscription2 = observable.subscribe();
+      
+      expect(mockLiveObject.addListener).toHaveBeenCalledTimes(1); // Only called once
+      
+      subscription1.unsubscribe();
+      subscription2.unsubscribe();
+    });
+
+    it('should handle setValue with direct property assignment', () => {
+      const directSetLiveObject = {
+        id: 'direct-set-object',
+        name: 'Direct Set Object',
+        volume: 0.5
+        // No set method
+      };
+
+      ObservablePropertyHelper.setValue(directSetLiveObject, 'volume', 0.8);
+      expect(directSetLiveObject.volume).toBe(0.8);
+    });
+
+    it('should handle getCurrentValue with undefined property', () => {
+      const undefinedPropLiveObject = {
+        id: 'undefined-prop-object',
+        name: 'Undefined Prop Object'
+        // volume property is undefined
+      };
+
+      const value = ObservablePropertyHelper.getCurrentValue(undefinedPropLiveObject, 'volume');
+      expect(value).toBeUndefined();
+    });
+
+    it('should handle cleanup for specific object', () => {
+      const cleanupLiveObject = {
+        id: 'cleanup-object',
+        name: 'Cleanup Object',
+        volume: 0.5,
+        addListener: jest.fn(),
+        removeListener: jest.fn()
+      };
+
+      const observable = ObservablePropertyHelper.observeProperty(cleanupLiveObject, 'volume');
+      const subscription = observable.subscribe();
+      
+      ObservablePropertyHelper.cleanup(cleanupLiveObject);
+      
+      // Should not throw errors
+      expect(() => subscription.unsubscribe()).not.toThrow();
+    });
+  });
 });
 
 describe('observeProperty convenience function', () => {

@@ -183,4 +183,176 @@ describe('LiveSetImpl', () => {
       expect(() => liveSet.cleanup()).not.toThrow();
     });
   });
+
+  describe('error handling', () => {
+    it('should handle initialization errors gracefully', () => {
+      const errorLiveObject = {
+        id: 'error-liveset',
+        tempo: 120,
+        time_signature_numerator: 4,
+        time_signature_denominator: 4,
+        tracks: null, // This will cause an error
+        scenes: null,
+        set: jest.fn()
+      };
+
+      // The constructor doesn't throw errors - it handles them gracefully
+      const errorLiveSet = new LiveSetImpl(errorLiveObject);
+      expect(errorLiveSet).toBeInstanceOf(LiveSetImpl);
+      expect(errorLiveSet.tracks).toEqual([]);
+      expect(errorLiveSet.scenes).toEqual([]);
+    });
+
+    it('should handle track loading errors', () => {
+      const errorLiveObject = {
+        id: 'error-liveset',
+        tempo: 120,
+        time_signature_numerator: 4,
+        time_signature_denominator: 4,
+        tracks: [
+          {
+            id: 'track-1',
+            name: 'Track 1',
+            volume: 0.8,
+            pan: 0,
+            mute: false,
+            solo: false,
+            devices: [],
+            clips: [],
+            initialize: jest.fn().mockRejectedValue(new Error('Track initialization failed'))
+          }
+        ],
+        scenes: [],
+        set: jest.fn()
+      };
+
+      // The constructor doesn't throw errors - it handles them gracefully
+      const errorLiveSet = new LiveSetImpl(errorLiveObject);
+      expect(errorLiveSet).toBeInstanceOf(LiveSetImpl);
+    });
+
+    it('should handle scene loading errors', () => {
+      const errorLiveObject = {
+        id: 'error-liveset',
+        tempo: 120,
+        time_signature_numerator: 4,
+        time_signature_denominator: 4,
+        tracks: [],
+        scenes: [
+          {
+            id: 'scene-1',
+            name: 'Scene 1',
+            color: 0,
+            is_selected: false,
+            initialize: jest.fn().mockRejectedValue(new Error('Scene initialization failed'))
+          }
+        ],
+        set: jest.fn()
+      };
+
+      // The constructor doesn't throw errors - it handles them gracefully
+      const errorLiveSet = new LiveSetImpl(errorLiveObject);
+      expect(errorLiveSet).toBeInstanceOf(LiveSetImpl);
+    });
+
+    it('should handle tempo loading errors', () => {
+      const errorLiveObject = {
+        id: 'error-liveset',
+        tempo: null, // This will cause an error
+        time_signature_numerator: 4,
+        time_signature_denominator: 4,
+        tracks: [],
+        scenes: [],
+        set: jest.fn()
+      };
+
+      // The constructor doesn't throw errors - it handles them gracefully
+      const errorLiveSet = new LiveSetImpl(errorLiveObject);
+      expect(errorLiveSet).toBeInstanceOf(LiveSetImpl);
+      expect(errorLiveSet.tempo).toBe(120); // Default value
+    });
+
+    it('should handle time signature loading errors', () => {
+      const errorLiveObject = {
+        id: 'error-liveset',
+        tempo: 120,
+        time_signature_numerator: null, // This will cause an error
+        time_signature_denominator: 4,
+        tracks: [],
+        scenes: [],
+        set: jest.fn()
+      };
+
+      // The constructor doesn't throw errors - it handles them gracefully
+      const errorLiveSet = new LiveSetImpl(errorLiveObject);
+      expect(errorLiveSet).toBeInstanceOf(LiveSetImpl);
+      expect(errorLiveSet.timeSignature).toEqual({ numerator: 4, denominator: 4 }); // Default value
+    });
+  });
+
+  describe('edge cases', () => {
+    it('should handle empty tracks array', () => {
+      const emptyTracksLiveObject = {
+        id: 'empty-tracks-liveset',
+        tempo: 120,
+        time_signature_numerator: 4,
+        time_signature_denominator: 4,
+        tracks: [],
+        scenes: [],
+        set: jest.fn()
+      };
+
+      const emptyTracksLiveSet = new LiveSetImpl(emptyTracksLiveObject);
+
+      expect(emptyTracksLiveSet.tracks).toEqual([]);
+    });
+
+    it('should handle empty scenes array', () => {
+      const emptyScenesLiveObject = {
+        id: 'empty-scenes-liveset',
+        tempo: 120,
+        time_signature_numerator: 4,
+        time_signature_denominator: 4,
+        tracks: [],
+        scenes: [],
+        set: jest.fn()
+      };
+
+      const emptyScenesLiveSet = new LiveSetImpl(emptyScenesLiveObject);
+
+      expect(emptyScenesLiveSet.scenes).toEqual([]);
+    });
+
+    it('should handle undefined tracks property', () => {
+      const undefinedTracksLiveObject = {
+        id: 'undefined-tracks-liveset',
+        tempo: 120,
+        time_signature_numerator: 4,
+        time_signature_denominator: 4,
+        // tracks property is undefined
+        scenes: [],
+        set: jest.fn()
+      };
+
+      const undefinedTracksLiveSet = new LiveSetImpl(undefinedTracksLiveObject);
+
+      expect(undefinedTracksLiveSet.tracks).toEqual([]);
+    });
+
+    it('should handle undefined scenes property', () => {
+      const undefinedScenesLiveObject = {
+        id: 'undefined-scenes-liveset',
+        tempo: 120,
+        time_signature_numerator: 4,
+        time_signature_denominator: 4,
+        tracks: [],
+        // scenes property is undefined
+        set: jest.fn()
+      };
+
+      const undefinedScenesLiveSet = new LiveSetImpl(undefinedScenesLiveObject);
+
+      expect(undefinedScenesLiveSet.scenes).toEqual([]);
+    });
+  });
 });
