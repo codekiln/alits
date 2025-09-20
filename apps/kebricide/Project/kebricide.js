@@ -1,5 +1,5 @@
 "use strict";
-var mylib = require("alits_index.js");
+var mylib = require("@alits/core");
 inlets = 1;
 outlets = 1;
 autowatch = 1;

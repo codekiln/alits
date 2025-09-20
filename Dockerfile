@@ -31,13 +31,7 @@ RUN corepack enable pnpm
 COPY . /app
 WORKDIR /app
 
-# Install dependencies only - don't build yet
-# First fetch dependencies (only needs pnpm-lock.yaml)
-RUN pnpm fetch
-# Then install with all files
-RUN pnpm install --offline
+# Install dependencies with BuildKit cache mount for better performance
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
-# Fix ownership of node_modules to match the node user
-RUN chown -R node:node /app/node_modules
-
-CMD ["pnpm", "run", "dev"]
+CMD ["sleep", "infinity"]

@@ -38,7 +38,9 @@ describe('ObservablePropertyHelper', () => {
 
     it('should use addListener/removeListener if available', () => {
       const observable = ObservablePropertyHelper.observeProperty(mockLiveObject, 'volume');
+      const subscription = observable.subscribe();
       expect(mockLiveObject.addListener).toHaveBeenCalled();
+      subscription.unsubscribe();
     });
   });
 
