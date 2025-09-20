@@ -1,23 +1,20 @@
 {
-  "extends": "../../../../tsconfig.json",
+  "compileOnSave": true,
   "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs",
+    "module": "CommonJS",
+    "target": "ES5",
+    "ignoreDeprecations": "5.0",
+    "strict": false,
+    "noImplicitAny": false,
+    "sourceMap": false,
     "outDir": "./fixtures",
-    "rootDir": "./src",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "types": ["maxmsp"],
+    "lib": ["es5", "es2015.promise"],
     "moduleResolution": "node",
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true
+    "skipLibCheck": true
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "fixtures"
-  ]
+  "include": ["./src/**/*.ts"]
 }

@@ -4,8 +4,8 @@
   "description": "Manual test fixture for Observable helper functionality",
   "type": "module",
   "scripts": {
-    "build": "maxmsp-ts build",
-    "dev": "maxmsp-ts dev",
+    "build": "node ../../../../maxmsp-ts/dist/index.js build",
+    "dev": "node ../../../../maxmsp-ts/dist/index.js dev",
     "test": "echo 'Manual test - run in Ableton Live'"
   },
   "dependencies": {
@@ -14,11 +14,5 @@
   "devDependencies": {
     "@codekiln/maxmsp-ts": "workspace:*",
     "typescript": "^5.6.0"
-  },
-  "maxmsp": {
-    "target": "es5",
-    "module": "commonjs",
-    "outDir": "./fixtures",
-    "bundleDependencies": true
   }
 }

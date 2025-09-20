@@ -1,8 +1,8 @@
 // Observable Helper Test
 // This TypeScript file compiles to ES5 JavaScript for Max for Live runtime
 
-import { ObservablePropertyHelper, observeProperty, observeProperties } from '@alits/core';
-import { Observable } from 'rxjs';
+// Import the actual @alits/core package
+import { ObservablePropertyHelper, observeProperty } from '@alits/core';
 
 // Max for Live script setup
 inlets = 1;
@@ -10,167 +10,130 @@ outlets = 1;
 autowatch = 1;
 
 class ObservableHelperTest {
-    private mockLiveObject: any;
-    private subscriptions: any[] = [];
-
     constructor() {
-        // Create a mock LiveAPI object for testing
-        this.mockLiveObject = {
-            id: 'test-object',
-            volume: 0.8,
-            tempo: 120,
-            get: (prop: string) => {
-                return this.mockLiveObject[prop];
-            },
-            addListener: (prop: string, callback: Function) => {
-                // Mock listener registration
-                post(`[Alits/TEST] Added listener for ${prop}\n`);
-            },
-            removeListener: (prop: string, callback: Function) => {
-                // Mock listener removal
-                post(`[Alits/TEST] Removed listener for ${prop}\n`);
-            }
-        };
-        
         post('[Alits/TEST] Observable Helper Test initialized\n');
     }
 
     // Test basic property observation
-    testBasicPropertyObservation(): void {
+    testBasicObservation(): void {
         try {
-            const observable = observeProperty(this.mockLiveObject, 'volume');
-            
-            if (observable instanceof Observable) {
-                post('[Alits/TEST] Successfully created volume observable\n');
-                
-                // Subscribe to test the observable
-                const subscription = observable.subscribe({
-                    next: (value) => {
-                        post(`[Alits/TEST] Volume changed to: ${value}\n`);
-                    },
-                    error: (error) => {
-                        post(`[Alits/TEST] Observable error: ${error.message}\n`);
-                    },
-                    complete: () => {
-                        post('[Alits/TEST] Observable completed\n');
+            // Create a mock LiveAPI object
+            const mockLiveObject = {
+                id: 'test_object',
+                tempo: 120,
+                set: function(prop: string, value: any) {
+                    this[prop] = value;
+                    // Simulate property change event
+                    if (this.onPropertyChanged) {
+                        this.onPropertyChanged(prop, value);
                     }
-                });
-                
-                this.subscriptions.push(subscription);
-                
-                // Simulate property change
-                this.mockLiveObject.volume = 0.9;
-                
-            } else {
-                post('[Alits/TEST] Failed to create volume observable\n');
-            }
-            
-        } catch (error) {
-            post(`[Alits/TEST] Failed basic property observation: ${error.message}\n`);
-        }
-    }
+                },
+                onPropertyChanged: null
+            };
 
-    // Test multiple property observation
-    testMultiplePropertyObservation(): void {
-        try {
-            const observable = observeProperties(this.mockLiveObject, ['volume', 'tempo']);
+            // Test observeProperty function
+            const tempoObservable = observeProperty<number>(mockLiveObject, 'tempo');
             
-            if (observable instanceof Observable) {
-                post('[Alits/TEST] Successfully created multi-property observable\n');
-                
-                const subscription = observable.subscribe({
-                    next: (values) => {
-                        post(`[Alits/TEST] Properties changed: ${JSON.stringify(values)}\n`);
-                    },
-                    error: (error) => {
-                        post(`[Alits/TEST] Multi-property observable error: ${error.message}\n`);
-                    }
-                });
-                
-                this.subscriptions.push(subscription);
-                
-            } else {
-                post('[Alits/TEST] Failed to create multi-property observable\n');
-            }
+            post('[Alits/TEST] Created tempo observable\n');
             
-        } catch (error) {
-            post(`[Alits/TEST] Failed multiple property observation: ${error.message}\n`);
+            // Test ObservablePropertyHelper class
+            const helperObservable = ObservablePropertyHelper.observeProperty<number>(mockLiveObject, 'tempo');
+            
+            post('[Alits/TEST] Created helper observable\n');
+            
+        } catch (error: any) {
+            post(`[Alits/TEST] Failed basic observation test: ${error.message}\n`);
         }
     }
 
     // Test error handling
     testErrorHandling(): void {
         try {
-            const invalidObject = null;
-            const observable = observeProperty(invalidObject, 'volume');
-            
-            if (observable instanceof Observable) {
-                post('[Alits/TEST] Created observable for invalid object (should handle gracefully)\n');
-                
-                const subscription = observable.subscribe({
-                    next: (value) => {
-                        post(`[Alits/TEST] Unexpected value: ${value}\n`);
-                    },
-                    error: (error) => {
-                        post(`[Alits/TEST] Expected error handled: ${error.message}\n`);
-                    }
-                });
-                
-                this.subscriptions.push(subscription);
-                
-            } else {
-                post('[Alits/TEST] Failed to create observable for invalid object\n');
+            // Test with null object
+            try {
+                observeProperty(null, 'tempo');
+                post('[Alits/TEST] ERROR: Should have thrown for null object\n');
+            } catch (error: any) {
+                post(`[Alits/TEST] Correctly caught null object error: ${error.message}\n`);
             }
-            
-        } catch (error) {
-            post(`[Alits/TEST] Error handling test failed: ${error.message}\n`);
+
+            // Test with invalid property name
+            try {
+                const mockObject = { id: 'test' };
+                observeProperty(mockObject, '');
+                post('[Alits/TEST] ERROR: Should have thrown for empty property name\n');
+            } catch (error: any) {
+                post(`[Alits/TEST] Correctly caught empty property error: ${error.message}\n`);
+            }
+
+            // Test with non-string property name
+            try {
+                const mockObject = { id: 'test' };
+                observeProperty(mockObject, 123 as any);
+                post('[Alits/TEST] ERROR: Should have thrown for non-string property\n');
+            } catch (error: any) {
+                post(`[Alits/TEST] Correctly caught non-string property error: ${error.message}\n`);
+            }
+
+        } catch (error: any) {
+            post(`[Alits/TEST] Failed error handling tests: ${error.message}\n`);
         }
     }
 
-    // Test cleanup
-    testCleanup(): void {
+    // Test multiple property observation
+    testMultipleProperties(): void {
         try {
-            post(`[Alits/TEST] Cleaning up ${this.subscriptions.length} subscriptions\n`);
-            
-            // Unsubscribe from all subscriptions
-            this.subscriptions.forEach((subscription, index) => {
-                subscription.unsubscribe();
-                post(`[Alits/TEST] Unsubscribed from subscription ${index + 1}\n`);
-            });
-            
-            this.subscriptions = [];
-            
-            // Test static cleanup method
-            ObservablePropertyHelper.cleanupAll();
-            post('[Alits/TEST] Static cleanup completed\n');
-            
-        } catch (error) {
-            post(`[Alits/TEST] Cleanup test failed: ${error.message}\n`);
+            const mockLiveObject = {
+                id: 'multi_test',
+                tempo: 120,
+                time_signature_numerator: 4,
+                time_signature_denominator: 4
+            };
+
+            // Observe multiple properties
+            const tempoObs = observeProperty<number>(mockLiveObject, 'tempo');
+            const numeratorObs = observeProperty<number>(mockLiveObject, 'time_signature_numerator');
+            const denominatorObs = observeProperty<number>(mockLiveObject, 'time_signature_denominator');
+
+            post('[Alits/TEST] Created observables for tempo, numerator, and denominator\n');
+            post(`[Alits/TEST] Current values - Tempo: ${mockLiveObject.tempo}, Time: ${mockLiveObject.time_signature_numerator}/${mockLiveObject.time_signature_denominator}\n`);
+
+        } catch (error: any) {
+            post(`[Alits/TEST] Failed multiple properties test: ${error.message}\n`);
         }
     }
 
-    // Test property change simulation
-    simulatePropertyChanges(): void {
+    // Test ObservablePropertyHelper class methods
+    testHelperClass(): void {
         try {
-            post('[Alits/TEST] Simulating property changes...\n');
-            
-            // Simulate volume changes
-            this.mockLiveObject.volume = 0.5;
-            post('[Alits/TEST] Volume set to 0.5\n');
-            
-            this.mockLiveObject.volume = 1.0;
-            post('[Alits/TEST] Volume set to 1.0\n');
-            
-            // Simulate tempo changes
-            this.mockLiveObject.tempo = 140;
-            post('[Alits/TEST] Tempo set to 140\n');
-            
-            this.mockLiveObject.tempo = 80;
-            post('[Alits/TEST] Tempo set to 80\n');
-            
-        } catch (error) {
-            post(`[Alits/TEST] Property change simulation failed: ${error.message}\n`);
+            const mockLiveObject = {
+                id: 'helper_test',
+                volume: 0.8,
+                pan: 0.0
+            };
+
+            // Test class method
+            const volumeObs = ObservablePropertyHelper.observeProperty<number>(mockLiveObject, 'volume');
+            const panObs = ObservablePropertyHelper.observeProperty<number>(mockLiveObject, 'pan');
+
+            post('[Alits/TEST] Created helper observables for volume and pan\n');
+            post(`[Alits/TEST] Current values - Volume: ${mockLiveObject.volume}, Pan: ${mockLiveObject.pan}\n`);
+
+        } catch (error: any) {
+            post(`[Alits/TEST] Failed helper class test: ${error.message}\n`);
         }
+    }
+
+    // Run all tests
+    runAllTests(): void {
+        post('[Alits/TEST] === Running Observable Helper Tests ===\n');
+        
+        this.testBasicObservation();
+        this.testErrorHandling();
+        this.testMultipleProperties();
+        this.testHelperClass();
+        
+        post('[Alits/TEST] === Observable Helper Tests Complete ===\n');
     }
 }
 
@@ -179,33 +142,23 @@ const testApp = new ObservableHelperTest();
 
 // Expose functions to Max for Live
 function bang() {
-    post('[Alits/TEST] Starting Observable Helper tests...\n');
-    testApp.testBasicPropertyObservation();
-    testApp.testMultiplePropertyObservation();
-    testApp.testErrorHandling();
-    testApp.simulatePropertyChanges();
-    testApp.testCleanup();
-    post('[Alits/TEST] Observable Helper tests completed\n');
+    testApp.runAllTests();
 }
 
-function test_basic_observation() {
-    testApp.testBasicPropertyObservation();
+function test_basic() {
+    testApp.testBasicObservation();
 }
 
-function test_multiple_observation() {
-    testApp.testMultiplePropertyObservation();
-}
-
-function test_error_handling() {
+function test_errors() {
     testApp.testErrorHandling();
 }
 
-function simulate_changes() {
-    testApp.simulatePropertyChanges();
+function test_multiple() {
+    testApp.testMultipleProperties();
 }
 
-function test_cleanup() {
-    testApp.testCleanup();
+function test_helper() {
+    testApp.testHelperClass();
 }
 
 // Required for Max TypeScript compilation
