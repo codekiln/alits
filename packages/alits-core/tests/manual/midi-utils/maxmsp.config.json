@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "@alits/core": {
+      "path": "../../../",
+      "bundle": true
+    }
+  },
+  "output": {
+    "bundleName": "alits_core_index.js",
+    "includeSourceMaps": false
+  }
+}
