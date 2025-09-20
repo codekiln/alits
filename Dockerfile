@@ -37,4 +37,7 @@ COPY . .
 RUN pnpm install
 RUN pnpm build
 
+# Fix ownership of node_modules to match the node user
+RUN chown -R node:node /app/node_modules
+
 CMD ["pnpm", "run", "dev"]
