@@ -1,11 +1,8 @@
 "use strict";
 // LiveSet Basic Functionality Test - Max 8 Compatible
 // This version avoids async/await and Promise for Max 8 compatibility
-// Import the minimal @alits/core package
-var core_1 = require("alits_minimal.js");
-// Debug: Check what core_1 contains
-post('[Alits/DEBUG] core_1 keys: ' + Object.keys(core_1).join(', ') + '\n');
-post('[Alits/DEBUG] core_1.LiveSet type: ' + typeof core_1.LiveSet + '\n');
+// Import the actual @alits/core package
+var core_1 = require("alits_index.js");
 // Max for Live script setup
 inlets = 1;
 outlets = 1;
