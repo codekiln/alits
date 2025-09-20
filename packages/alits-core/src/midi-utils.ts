@@ -15,7 +15,7 @@ export class MIDIUtils {
    * @returns Note name with octave (e.g., "C4", "F#3")
    */
   static noteNumberToName(noteNumber: number): string {
-    if (noteNumber < 0 || noteNumber > 127) {
+    if (isNaN(noteNumber) || noteNumber < 0 || noteNumber > 127) {
       throw new Error(`Invalid MIDI note number: ${noteNumber}. Must be between 0 and 127.`);
     }
 
@@ -36,10 +36,10 @@ export class MIDIUtils {
       throw new Error('Note name must be a non-empty string');
     }
 
-    // Parse note name (e.g., "C4", "F#3", "Bb2")
-    const match = noteName.match(/^([A-G])([#b]?)(\d+)$/i);
+    // Parse note name (e.g., "C4", "F#3", "Bb2", "C-1")
+    const match = noteName.match(/^([A-Z])([#b]?)(-?\d+)$/i);
     if (!match) {
-      throw new Error(`Invalid note name format: ${noteName}. Expected format like "C4", "F#3", or "Bb2"`);
+      throw new Error(`Invalid note name format: ${noteName}. Expected format like "C4", "F#3", "Bb2", or "C-1"`);
     }
 
     const [, baseNote, accidental, octaveStr] = match;

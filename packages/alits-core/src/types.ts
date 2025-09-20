@@ -36,6 +36,8 @@ export interface Track extends LiveAPIObject {
   devices: Device[];
   /** Array of clips on this track */
   clips: Clip[];
+  /** Cleanup method */
+  cleanup(): void;
 }
 
 export interface Scene extends LiveAPIObject {
@@ -45,6 +47,8 @@ export interface Scene extends LiveAPIObject {
   color: number;
   /** Whether the scene is selected */
   isSelected: boolean;
+  /** Cleanup method */
+  cleanup(): void;
 }
 
 export interface Device extends LiveAPIObject {
@@ -54,6 +58,8 @@ export interface Device extends LiveAPIObject {
   type: string;
   /** Device parameters */
   parameters: Parameter[];
+  /** Cleanup method */
+  cleanup(): void;
 }
 
 export interface RackDevice extends Device {
@@ -96,6 +102,8 @@ export interface Clip extends LiveAPIObject {
   isPlaying: boolean;
   /** Whether the clip is recording */
   isRecording: boolean;
+  /** Cleanup method */
+  cleanup(): void;
 }
 
 export interface Parameter extends LiveAPIObject {

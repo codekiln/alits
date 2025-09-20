@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { LiveSet, Track, Scene, Device, RackDevice, DrumPad, Clip, Parameter, TimeSignature } from './types';
 import { observeProperty, ObservablePropertyHelper } from './observable-helper';
 
@@ -36,7 +37,8 @@ export class LiveSetImpl implements LiveSet {
       await this.loadTimeSignature();
     } catch (error) {
       console.error('Failed to initialize LiveSet:', error);
-      throw new Error(`Failed to initialize LiveSet: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to initialize LiveSet: ${errorMessage}`);
     }
   }
 
@@ -56,7 +58,8 @@ export class LiveSetImpl implements LiveSet {
       }
     } catch (error) {
       console.error('Failed to load tracks:', error);
-      throw new Error(`Failed to load tracks: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to load tracks: ${errorMessage}`);
     }
   }
 
@@ -76,7 +79,8 @@ export class LiveSetImpl implements LiveSet {
       }
     } catch (error) {
       console.error('Failed to load scenes:', error);
-      throw new Error(`Failed to load scenes: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to load scenes: ${errorMessage}`);
     }
   }
 
@@ -90,7 +94,8 @@ export class LiveSetImpl implements LiveSet {
       }
     } catch (error) {
       console.error('Failed to load tempo:', error);
-      throw new Error(`Failed to load tempo: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to load tempo: ${errorMessage}`);
     }
   }
 
@@ -107,7 +112,8 @@ export class LiveSetImpl implements LiveSet {
       }
     } catch (error) {
       console.error('Failed to load time signature:', error);
-      throw new Error(`Failed to load time signature: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to load time signature: ${errorMessage}`);
     }
   }
 
@@ -167,7 +173,8 @@ export class LiveSetImpl implements LiveSet {
       this.tempo = tempo;
     } catch (error) {
       console.error('Failed to set tempo:', error);
-      throw new Error(`Failed to set tempo: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to set tempo: ${errorMessage}`);
     }
   }
 
@@ -188,7 +195,8 @@ export class LiveSetImpl implements LiveSet {
       this.timeSignature = { numerator, denominator };
     } catch (error) {
       console.error('Failed to set time signature:', error);
-      throw new Error(`Failed to set time signature: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to set time signature: ${errorMessage}`);
     }
   }
 
@@ -209,7 +217,7 @@ export class LiveSetImpl implements LiveSet {
       this.liveObject,
       ['time_signature_numerator', 'time_signature_denominator']
     ).pipe(
-      map(values => ({
+      map((values: any) => ({
         numerator: values.time_signature_numerator || 4,
         denominator: values.time_signature_denominator || 4
       }))

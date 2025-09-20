@@ -44,7 +44,7 @@ export class ObservablePropertyHelper {
     const key = `${liveObject.id || 'unknown'}.${propertyName}`;
 
     return fromEventPattern<T>(
-      (handler) => {
+      (handler: (value: T) => void) => {
         // Subscribe to property changes
         if (liveObject.addListener) {
           liveObject.addListener(propertyName, handler);
@@ -63,7 +63,7 @@ export class ObservablePropertyHelper {
           liveObject._pollInterval = interval;
         }
       },
-      (handler) => {
+      (handler: (value: T) => void) => {
         // Unsubscribe from property changes
         if (liveObject.removeListener) {
           liveObject.removeListener(propertyName, handler);
@@ -96,13 +96,13 @@ export class ObservablePropertyHelper {
 
     const observables = propertyNames.map(name => 
       this.observeProperty(liveObject, name).pipe(
-        map(value => ({ [name]: value }))
+        map((value: any) => ({ [name]: value }))
       )
     );
 
     return new Observable<T>(subscriber => {
       const subscriptions = observables.map(obs => 
-        obs.subscribe(change => {
+        obs.subscribe((change: any) => {
           subscriber.next(change as T);
         })
       );
@@ -146,7 +146,8 @@ export class ObservablePropertyHelper {
   static cleanup(liveObject: any): void {
     const objectId = liveObject.id || 'unknown';
     
-    for (const [key, subscription] of this.subscriptions.entries()) {
+    const entries = Array.from(this.subscriptions.entries());
+    for (const [key, subscription] of entries) {
       if (key.startsWith(objectId)) {
         subscription.unsubscribe();
         this.subscriptions.delete(key);
@@ -158,7 +159,8 @@ export class ObservablePropertyHelper {
    * Clean up all subscriptions
    */
   static cleanupAll(): void {
-    for (const subscription of this.subscriptions.values()) {
+    const subscriptions = Array.from(this.subscriptions.values());
+    for (const subscription of subscriptions) {
       subscription.unsubscribe();
     }
     this.subscriptions.clear();
