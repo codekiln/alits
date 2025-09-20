@@ -94,6 +94,45 @@ importers:
         specifier: ^5.6.2
         version: 5.7.3
 
+  packages/alits-core/tests/manual/liveset-basic:
+    dependencies:
+      '@alits/core':
+        specifier: workspace:*
+        version: link:../../..
+    devDependencies:
+      '@codekiln/maxmsp-ts':
+        specifier: workspace:*
+        version: link:../../../../maxmsp-ts
+      typescript:
+        specifier: ^5.6.0
+        version: 5.7.3
+
+  packages/alits-core/tests/manual/midi-utils:
+    dependencies:
+      '@alits/core':
+        specifier: workspace:*
+        version: link:../../..
+    devDependencies:
+      '@codekiln/maxmsp-ts':
+        specifier: workspace:*
+        version: link:../../../../maxmsp-ts
+      typescript:
+        specifier: ^5.6.0
+        version: 5.7.3
+
+  packages/alits-core/tests/manual/observable-helper:
+    dependencies:
+      '@alits/core':
+        specifier: workspace:*
+        version: link:../../..
+    devDependencies:
+      '@codekiln/maxmsp-ts':
+        specifier: workspace:*
+        version: link:../../../../maxmsp-ts
+      typescript:
+        specifier: ^5.6.0
+        version: 5.7.3
+
   packages/maxmsp-ts:
     dependencies:
       chokidar:
