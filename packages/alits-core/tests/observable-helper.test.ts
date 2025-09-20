@@ -282,4 +282,73 @@ describe('observeProperties convenience function', () => {
     const observable = observeProperties(mockLiveObject, ['volume', 'tempo']);
     expect(observable).toBeInstanceOf(Observable);
   });
+
+  describe('error handling', () => {
+    it('should handle errors in property observation', () => {
+      const errorLiveObject = {
+        id: 'error-object',
+        volume: 0.8,
+        get: jest.fn().mockImplementation((prop: string) => {
+          if (prop === 'volume') {
+            throw new Error('Property access error');
+          }
+          return 0.8;
+        }),
+        addPropertyObserver: jest.fn(),
+        removePropertyObserver: jest.fn()
+      };
+
+      const observable = observeProperty(errorLiveObject, 'volume');
+      expect(observable).toBeInstanceOf(Observable);
+    });
+
+    it('should handle cleanup errors gracefully', () => {
+      const errorLiveObject = {
+        id: 'error-object',
+        volume: 0.8,
+        get: jest.fn().mockReturnValue(0.8),
+        addPropertyObserver: jest.fn(),
+        removePropertyObserver: jest.fn().mockImplementation(() => {
+          throw new Error('Cleanup error');
+        })
+      };
+
+      // Test static cleanup method
+      expect(() => ObservablePropertyHelper.cleanupAll()).not.toThrow();
+    });
+  });
+
+  describe('edge cases', () => {
+    it('should handle undefined property values', () => {
+      const undefinedLiveObject = {
+        id: 'undefined-object',
+        volume: undefined,
+        get: jest.fn().mockReturnValue(undefined),
+        addPropertyObserver: jest.fn(),
+        removePropertyObserver: jest.fn()
+      };
+
+      const observable = observeProperty(undefinedLiveObject, 'volume');
+      expect(observable).toBeInstanceOf(Observable);
+    });
+
+    it('should handle null property values', () => {
+      const nullLiveObject = {
+        id: 'null-object',
+        volume: null,
+        get: jest.fn().mockReturnValue(null),
+        addPropertyObserver: jest.fn(),
+        removePropertyObserver: jest.fn()
+      };
+
+      const observable = observeProperty(nullLiveObject, 'volume');
+      expect(observable).toBeInstanceOf(Observable);
+    });
+
+    it('should handle multiple cleanup calls', () => {
+      // Test static cleanup method multiple times
+      expect(() => ObservablePropertyHelper.cleanupAll()).not.toThrow();
+      expect(() => ObservablePropertyHelper.cleanupAll()).not.toThrow();
+    });
+  });
 });

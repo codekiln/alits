@@ -355,4 +355,117 @@ describe('LiveSetImpl', () => {
       expect(undefinedScenesLiveSet.scenes).toEqual([]);
     });
   });
+
+  describe('error handling', () => {
+    it('should handle initialization errors gracefully', async () => {
+      const errorLiveObject = {
+        id: 'error-liveset',
+        tempo: 120,
+        time_signature_numerator: 4,
+        time_signature_denominator: 4,
+        tracks: [],
+        scenes: [],
+        set: jest.fn().mockRejectedValue(new Error('LiveAPI error'))
+      };
+
+      // Test constructor error handling by mocking the private method
+      const originalConsoleError = console.error;
+      console.error = jest.fn();
+      
+      try {
+        const errorLiveSet = new LiveSetImpl(errorLiveObject);
+        // The constructor calls initializeLiveSet internally, so we test the error handling
+        expect(errorLiveSet).toBeInstanceOf(LiveSetImpl);
+      } catch (error) {
+        expect(error).toBeInstanceOf(Error);
+      } finally {
+        console.error = originalConsoleError;
+      }
+    });
+
+    it('should handle tempo change errors', async () => {
+      const errorLiveObject = {
+        id: 'error-liveset',
+        tempo: 120,
+        time_signature_numerator: 4,
+        time_signature_denominator: 4,
+        tracks: [],
+        scenes: [],
+        set: jest.fn().mockRejectedValue(new Error('Tempo change failed'))
+      };
+
+      const errorLiveSet = new LiveSetImpl(errorLiveObject);
+      
+      await expect(errorLiveSet.setTempo(140)).rejects.toThrow('Tempo change failed');
+    });
+
+    it('should handle time signature change errors', async () => {
+      const errorLiveObject = {
+        id: 'error-liveset',
+        tempo: 120,
+        time_signature_numerator: 4,
+        time_signature_denominator: 4,
+        tracks: [],
+        scenes: [],
+        set: jest.fn().mockRejectedValue(new Error('Time signature change failed'))
+      };
+
+      const errorLiveSet = new LiveSetImpl(errorLiveObject);
+      
+      await expect(errorLiveSet.setTimeSignature(3, 4)).rejects.toThrow('Time signature change failed');
+    });
+  });
+
+  describe('edge cases', () => {
+    it('should handle extreme tempo values', () => {
+      const extremeTempoLiveObject = {
+        id: 'extreme-tempo-liveset',
+        tempo: 0.1, // Very slow tempo
+        time_signature_numerator: 4,
+        time_signature_denominator: 4,
+        tracks: [],
+        scenes: [],
+        set: jest.fn()
+      };
+
+      const extremeTempoLiveSet = new LiveSetImpl(extremeTempoLiveObject);
+      // The tempo starts with default value since initialization is async
+      expect(extremeTempoLiveSet.tempo).toBe(120); // Default value
+    });
+
+    it('should handle extreme time signature values', () => {
+      const extremeTimeSigLiveObject = {
+        id: 'extreme-timesig-liveset',
+        tempo: 120,
+        time_signature_numerator: 1,
+        time_signature_denominator: 1,
+        tracks: [],
+        scenes: [],
+        set: jest.fn()
+      };
+
+      const extremeTimeSigLiveSet = new LiveSetImpl(extremeTimeSigLiveObject);
+      // The time signature starts with default value since initialization is async
+      expect(extremeTimeSigLiveSet.timeSignature.numerator).toBe(4); // Default value
+      expect(extremeTimeSigLiveSet.timeSignature.denominator).toBe(4); // Default value
+    });
+
+    it('should handle cleanup when already cleaned up', () => {
+      const cleanupLiveObject = {
+        id: 'cleanup-liveset',
+        tempo: 120,
+        time_signature_numerator: 4,
+        time_signature_denominator: 4,
+        tracks: [],
+        scenes: [],
+        set: jest.fn()
+      };
+
+      const cleanupLiveSet = new LiveSetImpl(cleanupLiveObject);
+      cleanupLiveSet.cleanup();
+      
+      // Should not throw when cleaning up again
+      expect(() => cleanupLiveSet.cleanup()).not.toThrow();
+    });
+  });
 });

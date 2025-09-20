@@ -5,8 +5,9 @@ To create a fixture device that demonstrates basic LiveSet functionality includi
 
 ## Prerequisites
 - Ableton Live with Max for Live installed
-- `@alits/core` package built and available
+- `@alits/core` package built and available (compiled to ES5)
 - Max for Live device creation permissions
+- TypeScript development environment (for creating the test application)
 
 ## Steps
 
@@ -16,186 +17,113 @@ To create a fixture device that demonstrates basic LiveSet functionality includi
 
 ### 2. Add JavaScript Object
 1. Add a `js` object to the Max device
-2. Set the file path to `liveset-basic.js` (will be created in fixtures directory)
+2. Set the file path to `liveset-basic.js` (external file reference)
+3. Use `@external` parameter to load from external file
 
-### 3. Create Test Script
-Create `liveset-basic.js` with the following content:
+### 3. Create TypeScript Test Application
+Create a TypeScript file `liveset-basic.ts` that will compile to ES5 JavaScript:
 
-```javascript
+```typescript
 // LiveSet Basic Functionality Test
-// This script tests core LiveSet functionality in Max for Live runtime
+// This TypeScript file compiles to ES5 JavaScript for Max for Live runtime
 
-// Import the @alits/core package
-const { LiveSet } = require('@alits/core');
+import { LiveSet } from '@alits/core';
 
-// Test configuration
-const TEST_TIMEOUT = 5000; // 5 seconds
-let testResults = [];
+// Main test application class
+class LiveSetBasicTest {
+    private liveSet: LiveSet | null = null;
+    private liveApiSet: any;
 
-// Logging function for test results
-function logTest(testName, status, message) {
-    const result = {
-        test: testName,
-        status: status, // 'PASS', 'FAIL', 'SKIP'
-        message: message,
-        timestamp: new Date().toISOString()
-    };
-    testResults.push(result);
-    post(`[Alits/TEST] ${testName}: ${status} - ${message}`);
-}
-
-// Test 1: LiveSet Initialization
-async function testLiveSetInitialization() {
-    try {
-        logTest('LiveSet Initialization', 'RUNNING', 'Testing async LiveSet creation');
-        
-        const liveSet = await LiveSet.create();
-        
-        if (liveSet && typeof liveSet.getTracks === 'function') {
-            logTest('LiveSet Initialization', 'PASS', 'LiveSet created successfully with getTracks method');
-            return liveSet;
-        } else {
-            logTest('LiveSet Initialization', 'FAIL', 'LiveSet created but missing expected methods');
-            return null;
-        }
-    } catch (error) {
-        logTest('LiveSet Initialization', 'FAIL', `Error: ${error.message}`);
-        return null;
+    constructor() {
+        this.liveApiSet = new LiveAPI('live_set');
+        this.initialize();
     }
-}
 
-// Test 2: Track Access
-async function testTrackAccess(liveSet) {
-    if (!liveSet) {
-        logTest('Track Access', 'SKIP', 'LiveSet not available');
-        return;
-    }
-    
-    try {
-        logTest('Track Access', 'RUNNING', 'Testing track enumeration');
-        
-        const tracks = await liveSet.getTracks();
-        
-        if (Array.isArray(tracks)) {
-            logTest('Track Access', 'PASS', `Found ${tracks.length} tracks`);
-        } else {
-            logTest('Track Access', 'FAIL', 'getTracks() did not return an array');
-        }
-    } catch (error) {
-        logTest('Track Access', 'FAIL', `Error: ${error.message}`);
-    }
-}
-
-// Test 3: Error Handling
-async function testErrorHandling() {
-    try {
-        logTest('Error Handling', 'RUNNING', 'Testing error handling with invalid operations');
-        
-        // This should trigger an error in a controlled way
-        const liveSet = await LiveSet.create();
-        
-        // Try to access a non-existent track
+    async initialize(): Promise<void> {
         try {
-            await liveSet.getTrack(-1); // Invalid track index
-            logTest('Error Handling', 'FAIL', 'Expected error for invalid track index');
+            this.liveSet = new LiveSet(this.liveApiSet);
+            await this.liveSet.initializeLiveSet();
+            
+            console.log('[Alits/TEST] LiveSet initialized successfully');
+            console.log(`[Alits/TEST] Tempo: ${this.liveSet.getTempo()}`);
+            console.log(`[Alits/TEST] Time Signature: ${this.liveSet.getTimeSignature().numerator}/${this.liveSet.getTimeSignature().denominator}`);
+            console.log(`[Alits/TEST] Tracks: ${this.liveSet.getTracks().length}`);
+            console.log(`[Alits/TEST] Scenes: ${this.liveSet.getScenes().length}`);
         } catch (error) {
-            logTest('Error Handling', 'PASS', `Properly caught error: ${error.message}`);
+            console.error('[Alits/TEST] Failed to initialize LiveSet:', error);
         }
-        
-    } catch (error) {
-        logTest('Error Handling', 'FAIL', `Unexpected error: ${error.message}`);
     }
-}
 
-// Test 4: TypeScript Interface Compliance
-async function testInterfaceCompliance(liveSet) {
-    if (!liveSet) {
-        logTest('Interface Compliance', 'SKIP', 'LiveSet not available');
-        return;
-    }
-    
-    try {
-        logTest('Interface Compliance', 'RUNNING', 'Testing TypeScript interface compliance');
-        
-        // Check for required methods
-        const requiredMethods = ['getTracks', 'getTrack', 'getScenes', 'getScene'];
-        const missingMethods = [];
-        
-        for (const method of requiredMethods) {
-            if (typeof liveSet[method] !== 'function') {
-                missingMethods.push(method);
-            }
+    // Test tempo change functionality
+    async testTempoChange(newTempo: number): Promise<void> {
+        if (!this.liveSet) {
+            console.error('[Alits/TEST] LiveSet not initialized');
+            return;
         }
-        
-        if (missingMethods.length === 0) {
-            logTest('Interface Compliance', 'PASS', 'All required methods present');
-        } else {
-            logTest('Interface Compliance', 'FAIL', `Missing methods: ${missingMethods.join(', ')}`);
+
+        try {
+            await this.liveApiSet.set('tempo', newTempo);
+            console.log(`[Alits/TEST] Tempo changed to: ${newTempo}`);
+        } catch (error) {
+            console.error('[Alits/TEST] Failed to change tempo:', error);
         }
-        
-    } catch (error) {
-        logTest('Interface Compliance', 'FAIL', `Error: ${error.message}`);
+    }
+
+    // Test time signature change
+    async testTimeSignatureChange(numerator: number, denominator: number): Promise<void> {
+        if (!this.liveSet) {
+            console.error('[Alits/TEST] LiveSet not initialized');
+            return;
+        }
+
+        try {
+            await this.liveApiSet.set('time_signature_numerator', numerator);
+            await this.liveApiSet.set('time_signature_denominator', denominator);
+            console.log(`[Alits/TEST] Time signature changed to: ${numerator}/${denominator}`);
+        } catch (error) {
+            console.error('[Alits/TEST] Failed to change time signature:', error);
+        }
     }
 }
 
-// Main test runner
-async function runAllTests() {
-    post('[Alits/TEST] Starting LiveSet Basic Functionality Tests');
-    post('[Alits/TEST] ===========================================');
-    
-    // Run tests in sequence
-    const liveSet = await testLiveSetInitialization();
-    await testTrackAccess(liveSet);
-    await testErrorHandling();
-    await testInterfaceCompliance(liveSet);
-    
-    // Summary
-    const passed = testResults.filter(r => r.status === 'PASS').length;
-    const failed = testResults.filter(r => r.status === 'FAIL').length;
-    const skipped = testResults.filter(r => r.status === 'SKIP').length;
-    
-    post('[Alits/TEST] ===========================================');
-    post(`[Alits/TEST] Summary: ${passed} passed, ${failed} failed, ${skipped} skipped`);
-    
-    if (failed === 0) {
-        post('[Alits/TEST] All tests passed!');
-    } else {
-        post(`[Alits/TEST] ${failed} test(s) failed - see details above`);
-    }
-}
+// Initialize the test application
+const testApp = new LiveSetBasicTest();
 
-// Export test results for external access
-function getTestResults() {
-    return testResults;
+// Expose test functions to Max for Live
+if (typeof Max !== 'undefined') {
+    Max.global.testTempoChange = (tempo: number) => testApp.testTempoChange(tempo);
+    Max.global.testTimeSignatureChange = (num: number, den: number) => testApp.testTimeSignatureChange(num, den);
 }
-
-// Start tests when script loads
-runAllTests().catch(error => {
-    post(`[Alits/TEST] Fatal error: ${error.message}`);
-});
 ```
 
-### 4. Save Device
-1. Save the device as `LiveSetBasicTest.amxd` in the fixtures directory
-2. Ensure the device is properly saved and can be loaded
+### 4. Compile TypeScript to ES5 JavaScript
+Compile the TypeScript file to ES5-compatible JavaScript:
 
-### 5. Test Script Location
-The test script will be saved as `packages/alits-core/tests/manual/fixtures/liveset-basic.js`
+```bash
+# Using TypeScript compiler
+tsc liveset-basic.ts --target es5 --module commonjs --outDir ./compiled
 
-## Expected Behavior
-When the device is loaded in Ableton Live:
-1. It should initialize the LiveSet successfully
-2. It should enumerate tracks without errors
-3. It should handle errors gracefully
-4. It should log test results to the Max console
+# Or using your project's build system
+npm run build:test-fixtures
+```
 
-## Verification
-- Check Max console for `[Alits/TEST]` log messages
-- All tests should show "PASS" status
-- No JavaScript errors should occur
-- Device should load without crashing Max for Live
+This will create `liveset-basic.js` in the compiled output directory.
 
-## Troubleshooting
-- If LiveSet creation fails, check that the package is properly built
-- If track access fails, ensure Ableton Live has tracks in the current set
-- If errors occur, check Max console for detailed error messages
+### 5. Save Device
+1. In the Max editor, go to `File` > `Save As...`
+2. Navigate to `packages/alits-core/tests/manual/fixtures/`
+3. Save the device as `LiveSetBasicTest.amxd`
+4. Copy the compiled `liveset-basic.js` file to the same directory
+5. Close Max editor and save the device in Ableton Live
+
+### 6. Verify Setup
+The `fixtures/` directory should contain:
+- `LiveSetBasicTest.amxd` - The Max for Live device
+- `liveset-basic.js` - The compiled ES5 JavaScript file
+
+## Notes
+
+- The TypeScript file should be compiled to ES5 JavaScript for Max 8 compatibility
+- The external JavaScript file must be in the same directory as the `.amxd` device
+- Use `@external` parameter in the `js` object to load the external file
+- The compiled JavaScript should not use ES6+ features that aren't supported in Max 8
