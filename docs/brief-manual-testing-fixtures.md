@@ -23,7 +23,7 @@ The goal is to minimize the feedback loop between code changes and real-world ve
 
 ---
 
-### Fixture Structure in the Monorepo
+### Fixture Structure in the Monorepo (Turborepo Workspaces)
 
 ```
 /packages
@@ -31,12 +31,31 @@ The goal is to minimize the feedback loop between code changes and real-world ve
   │   ├── src/                # Source TypeScript files
   │   └── tests/              # All tests for this package
   │       ├── *.test.ts       # Automated unit tests
-  │       └── manual/         # Manual testing fixtures
-  │           ├── fixtures/   # .amxd files created in Ableton Live
-  │           ├── scripts/    # Human-readable test scripts (.md)
-  │           ├── creation/   # Step-by-step creation guides (.md)
-  │           ├── results/    # Recorded test results (.yaml/.md)
-  │           └── artifacts/  # Screenshots, screencasts, log exports
+  │       └── manual/         # Manual testing fixtures (Turborepo workspaces)
+  │           ├── liveset-basic/          # Individual test workspace
+  │           │   ├── src/
+  │           │   │   └── LiveSetBasicTest.ts
+  │           │   ├── fixtures/          # Compiled output + .amxd files
+  │           │   │   ├── LiveSetBasicTest.js
+  │           │   │   ├── LiveSetBasicTest.amxd
+  │           │   │   └── alits_core_index.js
+  │           │   ├── creation-guide.md
+  │           │   ├── test-script.md
+  │           │   ├── results/
+  │           │   ├── package.json        # Workspace package
+  │           │   ├── tsconfig.json       # Individual TS config
+  │           │   └── maxmsp.config.json  # Individual dependency config
+  │           ├── midi-utils/             # Individual test workspace
+  │           │   ├── src/
+  │           │   ├── fixtures/
+  │           │   ├── creation-guide.md
+  │           │   ├── test-script.md
+  │           │   ├── results/
+  │           │   ├── package.json
+  │           │   ├── tsconfig.json
+  │           │   └── maxmsp.config.json
+  │           └── observable-helper/      # Individual test workspace
+  │               └── ... (same structure)
   ├── alits-tracks/
   │   ├── src/
   │   └── tests/
@@ -48,35 +67,168 @@ The goal is to minimize the feedback loop between code changes and real-world ve
 
 Each manual test fixture includes:
 
-* **Fixture Device**: A `.amxd` file in `/packages/*/tests/manual/fixtures/`.
-* **Test Script**: Markdown file in `/packages/*/tests/manual/scripts/`.
-* **Creation Guide**: Markdown file in `/packages/*/tests/manual/creation/` with exact steps for first-time fixture creation.
-* **Result Log**: YAML or Markdown file in `/packages/*/tests/manual/results/`.
-* **Optional Artifacts**: Screenshots, screencasts, or exported logs in `/packages/*/tests/manual/artifacts/`.
+* **Individual Workspace**: Each test is a Turborepo workspace with its own configuration
+* **TypeScript Source**: A `.ts` file in the `src/` directory with test logic
+* **Compiled Output**: ES5 JavaScript files in the `fixtures/` directory
+* **Fixture Device**: A `.amxd` file in the `fixtures/` directory (human-created)
+* **Bundled Dependencies**: Local package dependencies bundled by maxmsp-ts
+* **Documentation**: Creation guides and test scripts co-located with the test
+* **Results**: Test execution results stored in the `results/` directory
+* **Configuration**: Individual `package.json`, `tsconfig.json`, and `maxmsp.config.json`
 
 Both automated unit tests and manual testing fixtures are co-located within each package.
 
 ---
 
+### TypeScript Fixture Workflow
+
+Manual testing fixtures use Max for Live's built-in TypeScript compilation system. This allows AI to generate fully-validated TypeScript code that compiles directly in the Max environment.
+
+#### Key Principles:
+
+1. **Co-located Files**: Each `.amxd` device has a corresponding `.ts` file in the same directory
+2. **Max TypeScript Compilation**: The `.ts` file uses Max's built-in TypeScript compiler (no external build step needed)
+3. **Import Support**: Fixtures can import from the package's compiled source using standard ES modules
+4. **AI Validation**: AI can validate TypeScript syntax, imports, and logic before human creates the `.amxd`
+
+#### TypeScript Fixture Template:
+
+```typescript
+// Example: packages/alits-core/tests/manual/fixtures/LiveSetBasicTest.ts
+import { LiveSet } from '@alits/core';
+
+// Max for Live script setup
+inlets = 1;
+outlets = 1;
+autowatch = 1;
+
+class LiveSetBasicTest {
+    private liveSet: LiveSet | null = null;
+
+    async initialize(): Promise<void> {
+        try {
+            const liveApiSet = new LiveAPI('live_set');
+            this.liveSet = new LiveSet(liveApiSet);
+            await this.liveSet.initializeLiveSet();
+            
+            post('[Alits/TEST] LiveSet initialized successfully\n');
+            post(`[Alits/TEST] Tempo: ${this.liveSet.getTempo()}\n`);
+        } catch (error) {
+            post(`[Alits/TEST] Error: ${error.message}\n`);
+        }
+    }
+
+    // Test functions exposed to Max
+    async testTempoChange(newTempo: number): Promise<void> {
+        if (!this.liveSet) {
+            post('[Alits/TEST] LiveSet not initialized\n');
+            return;
+        }
+        
+        try {
+            await this.liveSet.getLiveObject().set('tempo', newTempo);
+            post(`[Alits/TEST] Tempo changed to: ${newTempo}\n`);
+        } catch (error) {
+            post(`[Alits/TEST] Failed to change tempo: ${error.message}\n`);
+        }
+    }
+}
+
+// Initialize test instance
+const testApp = new LiveSetBasicTest();
+
+// Expose functions to Max for Live
+function bang() {
+    testApp.initialize();
+}
+
+function test_tempo(tempo: number) {
+    testApp.testTempoChange(tempo);
+}
+
+// Required for Max TypeScript compilation
+let module = {};
+export = {};
+```
+
+#### Compilation Pipeline (Turborepo + maxmsp-ts):
+
+**Using Turborepo for Build Orchestration**
+```bash
+# Build all manual tests in parallel
+turbo run build --filter="@alits/core-manual-test-*"
+
+# Build specific test
+turbo run build --filter="@alits/core-manual-test-liveset-basic"
+
+# Build with caching
+turbo run build --filter="@alits/core-manual-test-*" --cache-dir=".turbo"
+```
+
+**Individual Workspace Configuration:**
+- `package.json` - Workspace package with build scripts
+- `tsconfig.json` - Individual TypeScript config extending root config
+- `maxmsp.config.json` - Individual dependency resolution config
+
+**Output Structure:**
+```
+packages/alits-core/tests/manual/liveset-basic/
+├── src/                     # TypeScript source files
+│   └── LiveSetBasicTest.ts
+├── fixtures/                # Compiled output + .amxd files
+│   ├── LiveSetBasicTest.js  # Compiled from src/
+│   ├── LiveSetBasicTest.amxd # Human-created device
+│   └── alits_core_index.js  # Bundled @alits/core library
+├── creation-guide.md        # Co-located documentation
+├── test-script.md          # Co-located test instructions
+├── results/                # Test execution results
+├── package.json            # Workspace package config
+├── tsconfig.json           # Individual TS config
+└── maxmsp.config.json      # Individual dependency config
+```
+
+#### Human Workflow:
+
+1. **AI generates** the TypeScript fixture file (`.ts`) with full validation, imports, and test logic
+2. **AI sets up** individual Turborepo workspace with package.json, tsconfig.json, and maxmsp.config.json
+3. **AI compiles** TypeScript + dependencies to ES5 JavaScript bundles using Turborepo
+4. **AI generates** simplified creation guide focusing only on Max device setup
+5. **AI generates** test execution script with expected console output
+6. **Human creates** the `.amxd` device in Ableton Live (5 minutes) following the creation guide
+7. **Human runs** the test script, exports logs, and records results in the test's `results/` directory
+8. **Repository history** shows evidence of manual verification alongside automated test coverage
+
+This approach maximizes AI contribution (full TypeScript generation, validation, compilation, and dependency bundling) while minimizing human effort (simple Max device setup).
+
+---
+
 ### Example Fixture Creation Guide
 
-**Creation Guide: `/packages/alits-core/tests/manual/creation/drumPadRename.md`**
+**Creation Guide: `/packages/alits-core/tests/manual/creation/liveSetBasic.md`**
 
 ```markdown
-# Fixture Creation: Drum Pad Rename
+# Fixture Creation: LiveSet Basic Test
 
 ## Purpose
-To create a fixture device that renames Drum Rack pads to their MIDI note names.
+To create a fixture device that tests basic LiveSet functionality in Max for Live.
+
+## Prerequisites
+- AI has generated `LiveSetBasicTest.ts` in `/packages/alits-core/tests/manual/liveset-basic/src/`
+- AI has set up Turborepo workspace with package.json, tsconfig.json, and maxmsp.config.json
+- AI has compiled `LiveSetBasicTest.js` to `/packages/alits-core/tests/manual/liveset-basic/fixtures/`
+- JavaScript file is ES5 compatible for Max 8 runtime
+- Dependencies bundled (e.g., `alits_core_index.js`)
 
 ## Steps
-1. In Ableton Live, create a new Max MIDI Effect device.
-2. Add a `js` object and point it to a new file `drumPadRename.js`.
-3. Paste the generated code from `@alits/examples/drumPadRename`.
-4. Save the device as `DrumPadRename.amxd` inside the repo at `/packages/alits-core/tests/manual/fixtures/`.
+1. In Ableton Live, create a new Max MIDI Effect device
+2. Add a `[js]` object to the Max device
+3. Set the `[js]` object to reference `LiveSetBasicTest.js` in the fixtures directory
+4. Save the device as `LiveSetBasicTest.amxd` in the fixtures directory
 
 ## Verification of Fixture Creation
-- Confirm the `.amxd` loads in Ableton without errors.
-- Confirm pressing the button inside the device executes the script.
+- Confirm the `.amxd` loads in Ableton without JavaScript errors
+- Confirm Max console shows `[Alits/TEST]` messages when device initializes
+- Confirm test functions are accessible from Max (e.g., via `[button]` objects)
 ```
 
 ---
@@ -165,10 +317,25 @@ A companion script in `/packages/*/tests/manual/automated/` could scan for `[Ali
 
 ### AI Coding Workflow
 
-1. AI generates feature code, fixture creation guide, and test script scaffolding.
-2. Human tester creates the `.amxd` fixture in Ableton Live following the creation guide and saves it in `/packages/*/tests/manual/fixtures/`.
-3. Tester runs the test script, exports logs, and records results in `/packages/*/tests/manual/results/`.
-4. Repository history shows evidence of manual verification alongside automated test coverage.
+1. **AI generates** the TypeScript fixture file (`.ts`) with full validation, imports, and test logic
+2. **AI sets up** individual Turborepo workspace with package.json, tsconfig.json, and maxmsp.config.json
+3. **AI compiles** TypeScript + dependencies to ES5 JavaScript bundles using Turborepo
+4. **AI generates** simplified creation guide focusing only on Max device setup
+5. **AI generates** test execution script with expected console output
+6. **Human creates** the `.amxd` device in Ableton Live (5 minutes) following the creation guide
+7. **Human runs** the test script, exports logs, and records results in the test's `results/` directory
+8. **Repository history** shows evidence of manual verification alongside automated test coverage
+
+#### Benefits of This Workflow:
+- **AI handles** all complex TypeScript generation, validation, and compilation
+- **AI handles** local dependency bundling (e.g., `@alits/core` → `alits_core_index.js`)
+- **AI handles** Turborepo workspace setup and build orchestration
+- **Human effort** minimized to simple Max device creation
+- **Type safety** maintained through AI validation of imports and syntax
+- **Max compatibility** ensured through ES5 CommonJS compilation
+- **Scalable** through individual test workspaces
+- **Best practices** using Turborepo for monorepo build management
+- **Parallel builds** and caching through Turborepo
 
 ---
 
