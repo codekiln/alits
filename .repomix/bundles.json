@@ -1,0 +1,41 @@
+{
+  "bundles": {
+    "alits-full-865": {
+      "name": "alits-full",
+      "created": "2025-09-10T09:36:34.674Z",
+      "lastUsed": "2025-09-10T09:39:30.859Z",
+      "tags": [],
+      "files": [
+        "apps/kebricide/src/kebricide.ts",
+        "apps/maxmsp-test/README.md",
+        "apps/maxmsp-test/package.json",
+        "apps/maxmsp-test/maxmsp.config.json",
+        "apps/maxmsp-test/src/Main.ts",
+        "apps/kebricide/Project/alits_index.js",
+        "apps/kebricide/Project/kebricide.js",
+        "apps/kebricide/Project/myLibrary_index.js",
+        "docs",
+        "packages/alits-core/README.md",
+        "packages/alits-core/package.json",
+        "packages/alits-core/jest.config.js",
+        "packages/alits-core/rollup.config.js",
+        "packages/alits-core/tsconfig.json",
+        "packages/alits-core/tests/example.test.ts",
+        "packages/alits-core/src",
+        "packages/maxmsp-ts/src",
+        "packages/maxmsp-ts/CHANGELOG.md",
+        "packages/maxmsp-ts/package.json",
+        "packages/maxmsp-ts/README.md",
+        "packages/maxmsp-ts/tsconfig.json",
+        "AGENTS.md",
+        "package.json",
+        "README.md",
+        "turbo.json",
+        "pnpm-workspace.yaml",
+        "Dockerfile",
+        "docker-compose.yml",
+        ".dockerignore"
+      ]
+    }
+  }
+}
