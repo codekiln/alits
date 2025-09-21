@@ -2,6 +2,8 @@
 
 This directory contains manual testing fixtures for the `@alits/core` package. These fixtures are designed to validate functionality within the Max for Live runtime environment, complementing the automated unit tests.
 
+**📋 Standards**: All fixtures follow the [Manual Test Fixture Structure Standards](../../../docs/manual-test-fixture-standards.md) defined in the root docs folder.
+
 ## Directory Structure
 
 ```

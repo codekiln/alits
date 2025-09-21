@@ -4,6 +4,8 @@
 
 This document provides guidance for AI agents working on manual test fixtures, particularly for Max for Live development environments. It outlines the specific considerations, workflows, and best practices for effective human-AI collaboration in manual testing.
 
+**📋 Standards**: All fixtures follow the [Manual Test Fixture Structure Standards](../../../docs/manual-test-fixture-standards.md) defined in the root docs folder.
+
 ## Agent Roles and Responsibilities
 
 ### QA Agent (Primary)

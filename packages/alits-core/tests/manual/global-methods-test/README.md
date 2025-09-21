@@ -1,168 +1,61 @@
-# Max 8 JavaScript Global Methods Test
+# Global Methods Test Manual Test
 
 ## Overview
+This fixture tests Max 8's JavaScript global methods compatibility, validating which JavaScript features are available in the Max for Live runtime environment. It systematically tests various global methods, operators, and language features to establish a comprehensive compatibility baseline.
 
-This test fixture validates the availability of common JavaScript global methods in Max 8's JavaScript environment. It addresses the specific issue where `typeof` operator might not be available, and provides comprehensive testing of other global methods.
+## Prerequisites
+- Ableton Live 11 Suite with Max for Live
+- Max 8 installed
+- A Live set (can be empty)
+- @alits/core package built and available
 
-## Problem Statement
+## Quick Start
+1. Follow `creation-guide.md` to create the Max for Live device
+2. Follow `test-script.md` to execute tests
+3. Record results in `results/` directory
 
-Max for Live's JavaScript environment (JavaScript 1.8.5, ES5-based) has significant limitations compared to browser or Node.js environments. We need to systematically test which global methods are available to avoid runtime errors.
+## Files
+- `global-methods-test.amxd` - Max for Live device file
+- `GlobalMethodsTest.js` - Compiled JavaScript test implementation
+- `SimpleTypeofTest.js` - Simple typeof operator test
+- `alits_debug.js` - Debug build of @alits/core package
+- `alits_production.js` - Production build of @alits/core package
+- `global-methods-test.als` - Live Set file for testing
 
-## Test Files
+## Test Coverage
+This fixture tests:
+- JavaScript global methods availability (typeof, instanceof, etc.)
+- ES5 language features compatibility
+- Max 8 specific limitations and workarounds
+- Error handling for unsupported features
+- Performance characteristics of available methods
+- Alternative implementations for missing features
 
-### 1. `SimpleTypeofTest.js`
-**Purpose**: Quick test for the `typeof` operator issue
-**Usage**: Load in Max for Live js object and call `runTests()`
-
-**Tests**:
-- `typeof` operator with various data types
-- Alternative type checking function
-- Common global methods (Object, Array, String, etc.)
-
-### 2. `GlobalMethodsTest.js`
-**Purpose**: Comprehensive test of all JavaScript global methods
-**Usage**: Load in Max for Live js object and call `runAllTests()`
-
-**Tests**:
-- All JavaScript operators (`typeof`, `instanceof`, `in`, `delete`)
-- Core JavaScript objects (Object, Array, String, Number, Boolean, Date, Math, JSON, RegExp, Error, Function)
-- Global functions (eval, parseInt, parseFloat, isNaN, isFinite, encodeURI, decodeURI, etc.)
-- DOM/browser specific methods (setTimeout, setInterval, console, window, document, navigator)
-- ES6 features (Map, Set, Promise, Symbol, Proxy, Reflect, WeakMap, WeakSet)
-- Module system (require, import, export, module)
-
-## Usage Instructions
-
-### Quick Test (typeof issue)
-1. Open Ableton Live with Max for Live
-2. Create a new Live set with MIDI track
-3. Add Max MIDI Effect device
-4. Open Max editor and load `SimpleTypeofTest.js`
-5. Call `runTests()` function
-6. Check console output for results
-
-### Comprehensive Test
-1. Open Ableton Live with Max for Live
-2. Create a new Live set with MIDI track
-3. Add Max MIDI Effect device
-4. Open Max editor and load `GlobalMethodsTest.js`
-5. Call `runAllTests()` function
-6. Check console output for comprehensive results
-
-## Expected Results
-
-### Available Methods (ES5 Core)
-- `typeof` operator - **SHOULD BE AVAILABLE**
-- `instanceof` operator - **SHOULD BE AVAILABLE**
-- `in` operator - **SHOULD BE AVAILABLE**
-- `delete` operator - **SHOULD BE AVAILABLE**
-- `Object`, `Array`, `String`, `Number`, `Boolean` - **SHOULD BE AVAILABLE**
-- `Date`, `Math`, `JSON`, `RegExp`, `Error`, `Function` - **SHOULD BE AVAILABLE**
-- `eval`, `parseInt`, `parseFloat`, `isNaN`, `isFinite` - **SHOULD BE AVAILABLE**
-- `encodeURI`, `decodeURI`, `encodeURIComponent`, `decodeURIComponent` - **SHOULD BE AVAILABLE**
-- `require` - **SHOULD BE AVAILABLE** (CommonJS)
-
-### Unavailable Methods (Expected)
-- `setTimeout`, `setInterval`, `clearTimeout`, `clearInterval` - **NOT AVAILABLE**
-- `console`, `window`, `document`, `navigator` - **NOT AVAILABLE**
-- `Map`, `Set`, `Promise`, `Symbol`, `Proxy`, `Reflect` - **NOT AVAILABLE**
-- `WeakMap`, `WeakSet`, `Generator` - **NOT AVAILABLE**
-- `import`, `export`, `module` - **NOT AVAILABLE**
+## Expected Console Output
+When tests run successfully, you should see:
+```
+[BUILD] Entrypoint: GlobalMethodsTest
+[BUILD] Git: v1.0.0-5-g1234567
+[BUILD] Timestamp: 2025-01-12T10:15:00Z
+[BUILD] Source: @alits/core debug build (non-minified)
+[BUILD] Max 8 Compatible: Yes
+[Alits/TEST] Global Methods Test initialized
+[Alits/TEST] Testing typeof operator: available
+[Alits/TEST] Testing instanceof operator: available
+[Alits/TEST] Testing Object methods: available
+[Alits/TEST] Global methods compatibility test completed
+```
 
 ## Troubleshooting
+- **JavaScript errors**: Check that `GlobalMethodsTest.js` and `alits_debug.js` are in the same directory
+- **Import errors**: Verify the bundled dependencies are properly generated
+- **Runtime errors**: Ensure Ableton Live is running and LiveAPI is available
+- **Max 8 compatibility**: Check console for build identification and compatibility messages
+- **Unsupported methods**: This test is designed to identify unsupported methods - failures are expected and documented
 
-### If `typeof` is not available
-The test includes an alternative type checking function:
-```javascript
-function getType(value) {
-    if (value === null) return 'null';
-    if (value === undefined) return 'undefined';
-    if (value instanceof Array) return 'array';
-    if (value instanceof Date) return 'date';
-    if (value instanceof RegExp) return 'regexp';
-    if (value instanceof Error) return 'error';
-    if (value instanceof Function) return 'function';
-    if (value instanceof Object) return 'object';
-    return 'unknown';
-}
-```
-
-### If other methods are unexpectedly unavailable
-1. Check console output for specific error messages
-2. Verify Max 8 version and JavaScript engine
-3. Test with minimal examples to isolate issues
-4. Document findings for compatibility solutions
-
-## Integration with @alits/core
-
-### Current Issue
-The `LiveSetBasicTest.js` uses `typeof core_1.LiveSet` which might be failing if `typeof` is not available.
-
-### Solution
-If `typeof` is not available, we need to:
-1. Implement alternative type checking
-2. Update the test fixture to use compatible methods
-3. Update the @alits/core package to handle Max 8 limitations
-
-### Code Changes Required
-```javascript
-// Instead of:
-post('[Alits/DEBUG] core_1.LiveSet type: ' + typeof core_1.LiveSet + '\n');
-
-// Use:
-function getType(value) {
-    if (value === null) return 'null';
-    if (value === undefined) return 'undefined';
-    if (value instanceof Array) return 'array';
-    if (value instanceof Date) return 'date';
-    if (value instanceof RegExp) return 'regexp';
-    if (value instanceof Error) return 'error';
-    if (value instanceof Function) return 'function';
-    if (value instanceof Object) return 'object';
-    return 'unknown';
-}
-
-post('[Alits/DEBUG] core_1.LiveSet type: ' + getType(core_1.LiveSet) + '\n');
-```
-
-## Documentation
-
-### Research Brief
-See `docs/brief-max8-javascript-global-methods-research.md` for comprehensive research methodology and expected findings.
-
-### Agent Guidelines
-See `packages/alits-core/tests/manual/AGENTS.md` for agent-specific guidelines on Max 8 development.
-
-### Human-AI Collaboration
-See `docs/brief-human-ai-collaboration-manual-testing.md` for collaboration protocols.
-
-## Success Criteria
-
-### Test Execution
-- [ ] All tests run without errors in Max 8
-- [ ] Console output is clear and informative
-- [ ] Results match expected findings
-- [ ] Any discrepancies are documented
-
-### Problem Resolution
-- [ ] `typeof` operator issue identified and resolved
-- [ ] Alternative type checking implemented if needed
-- [ ] @alits/core package updated for Max 8 compatibility
-- [ ] Manual test fixtures working correctly
-
-### Documentation
-- [ ] Research brief completed with findings
-- [ ] Compatibility solutions documented
-- [ ] Best practices established
-- [ ] Integration guidelines provided
-
-## Next Steps
-
-1. **Execute tests** in Max 8 environment
-2. **Document actual results** and compare with expected findings
-3. **Implement compatibility solutions** for any missing methods
-4. **Update @alits/core package** with proper Max 8 compatibility
-5. **Validate integration** with existing manual test fixtures
-6. **Update documentation** with accurate information
-
-This systematic approach will ensure that we have evidence-based information about Max 8's JavaScript capabilities, rather than relying on assumptions that could lead to runtime errors.
+## Related Documentation
+- [Manual Test Fixture Structure Standards](../../../../docs/manual-test-fixture-standards.md)
+- [Manual Testing Fixtures Brief](../../../../docs/brief-manual-testing-fixtures.md)
+- [Max 8 JavaScript Global Methods Research](../../../../docs/brief-max8-javascript-global-methods-research.md)
+- [Max for Live Test Fixture Setup](../../../../docs/brief-max-for-live-fixture-setup.md)
+- [Foundation Core Package Setup](../../../../docs/stories/1.1.foundation-core-package-setup.md)

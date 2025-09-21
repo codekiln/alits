@@ -1,0 +1,18 @@
+{
+  "name": "@alits/core-test-global-methods",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "maxmsp build",
+    "dev": "maxmsp dev",
+    "test": "maxmsp test"
+  },
+  "dependencies": {
+    "@alits/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@maxmsp/typescript": "workspace:*",
+    "typescript": "workspace:*"
+  }
+}
