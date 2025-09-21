@@ -32,7 +32,7 @@ Max for Live's JavaScript environment (JavaScript 1.8.5, ES5-based) has signific
 ### 1. Official Documentation Analysis
 - **Max JavaScript Documentation**: [Max 8 JavaScript Intro](https://docs.cycling74.com/legacy/max8/vignettes/jsintro)
 - **Max Global Methods**: [Max 8 Global Methods](https://docs.cycling74.com/legacy/max8/vignettes/jsglobal) - **PRIMARY SOURCE**
-- **Max Task Object**: [Max 7 Task Object](https://docs.cycling74.com/legacy/max7/vignettes/jstaskobject)
+- **Max Task Object**: [Max 8 Task Object](https://docs.cycling74.com/legacy/max8/vignettes/jstaskobject)
 
 **Key Finding**: The [Max 8 Global Methods documentation](https://docs.cycling74.com/legacy/max8/vignettes/jsglobal) provides a comprehensive list of available global methods. This should be our primary reference rather than empirical testing.
 
