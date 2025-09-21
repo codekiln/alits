@@ -69,7 +69,7 @@ Based on the [Max 8 Global Methods documentation](https://docs.cycling74.com/leg
 - `setoutletassist(outlet_number, object)` - Associate assistance with outlet
 
 ### Standard JavaScript Global Methods
-The documentation doesn't explicitly list standard JavaScript global methods, but based on JavaScript 1.8.5 (ES5), these should be available:
+The documentation pages [Basic Javascript programming: Global Methods - Max 8 Documentation](https://docs.cycling74.com/legacy/max8/vignettes/jsglobal) does explicitly list standard JavaScript global methods, and there are many that are present in browser contexts that are not present in Max. The execution context is based on JavaScript 1.8.5 (ES5), which might lead one to think that these are available. We need to assume that any global function that is not present in [Basic Javascript programming: Global Methods - Max 8 Documentation](https://docs.cycling74.com/legacy/max8/vignettes/jsglobal) must be tested for existence first and then documented before using.
 - `typeof` operator - **NEEDS TESTING** (not in official Max docs)
 - `instanceof` operator - **NEEDS TESTING** (not in official Max docs)  
 - `parseInt()`, `parseFloat()` - **NEEDS TESTING** (not in official Max docs)
