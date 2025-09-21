@@ -70,16 +70,16 @@ Based on the [Max 8 Global Methods documentation](https://docs.cycling74.com/leg
 
 ### Standard JavaScript Global Methods
 The documentation doesn't explicitly list standard JavaScript global methods, but based on JavaScript 1.8.5 (ES5), these should be available:
-- `typeof` operator
-- `instanceof` operator  
-- `parseInt()`, `parseFloat()`
-- `isNaN()`, `isFinite()`
-- `Object` constructor and methods
-- `Array` constructor and methods
-- `String`, `Number`, `Boolean` constructors
-- `Math` object and methods
-- `Date` constructor and methods
-- `JSON` object (if available in ES5)
+- `typeof` operator - **NEEDS TESTING** (not in official Max docs)
+- `instanceof` operator - **NEEDS TESTING** (not in official Max docs)  
+- `parseInt()`, `parseFloat()` - **NEEDS TESTING** (not in official Max docs)
+- `isNaN()`, `isFinite()` - **NEEDS TESTING** (not in official Max docs)
+- `Object` constructor and methods - **NEEDS TESTING** (not in official Max docs)
+- `Array` constructor and methods - **NEEDS TESTING** (not in official Max docs)
+- `String`, `Number`, `Boolean` constructors - **NEEDS TESTING** (not in official Max docs)
+- `Math` object and methods - **NEEDS TESTING** (not in official Max docs)
+- `Date` constructor and methods - **NEEDS TESTING** (not in official Max docs)
+- `JSON` object - **NEEDS TESTING** (not in official Max docs)
 
 ### 2. Validation Testing Framework
 Create a test to validate the official documentation and identify any discrepancies:
