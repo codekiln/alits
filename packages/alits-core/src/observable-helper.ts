@@ -7,7 +7,7 @@ import { PropertyChangeEvent } from './types';
  * Creates RxJS observables for LiveAPI object properties
  */
 export class ObservablePropertyHelper {
-  private static readonly subscriptions = new Map<string, Subscription>();
+  private static subscriptions: { [key: string]: Subscription } = {};
 
   /**
    * Observe a property on a LiveAPI object
@@ -27,7 +27,7 @@ export class ObservablePropertyHelper {
     const key = `${liveObject.id || 'unknown'}.${propertyName}`;
 
     // Return existing observable if already created
-    if (this.subscriptions.has(key)) {
+    if (this.subscriptions[key]) {
       return this.createPropertyObservable(liveObject, propertyName);
     }
 
@@ -134,7 +134,7 @@ export class ObservablePropertyHelper {
 
     // Store subscription for cleanup
     const key = `${liveObject.id || 'unknown'}.${propertyName}.behavior`;
-    this.subscriptions.set(key, subscription);
+    this.subscriptions[key] = subscription;
 
     return subject;
   }
@@ -146,11 +146,11 @@ export class ObservablePropertyHelper {
   static cleanup(liveObject: any): void {
     const objectId = liveObject.id || 'unknown';
     
-    const entries = Array.from(this.subscriptions.entries());
-    for (const [key, subscription] of entries) {
+    const keys = Object.keys(this.subscriptions);
+    for (const key of keys) {
       if (key.startsWith(objectId)) {
-        subscription.unsubscribe();
-        this.subscriptions.delete(key);
+        this.subscriptions[key].unsubscribe();
+        delete this.subscriptions[key];
       }
     }
   }
@@ -159,11 +159,11 @@ export class ObservablePropertyHelper {
    * Clean up all subscriptions
    */
   static cleanupAll(): void {
-    const subscriptions = Array.from(this.subscriptions.values());
-    for (const subscription of subscriptions) {
-      subscription.unsubscribe();
+    const keys = Object.keys(this.subscriptions);
+    for (const key of keys) {
+      this.subscriptions[key].unsubscribe();
     }
-    this.subscriptions.clear();
+    this.subscriptions = {};
   }
 
   /**

@@ -144,3 +144,5 @@ function test_scenes() {
 // Required for Max TypeScript compilation
 let module = {};
 export = {};
+
+
