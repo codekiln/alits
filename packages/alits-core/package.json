@@ -32,7 +32,6 @@
   "author": "alits",
   "license": "MIT",
   "dependencies": {
-    "es6-promise": "^4.2.8",
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
