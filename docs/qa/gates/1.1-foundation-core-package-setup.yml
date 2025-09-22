@@ -14,7 +14,7 @@ top_issues:
   - id: 'FIXTURE-001'
     severity: high
     finding: 'Manual testing fixtures structure missing entirely'
-    suggested_action: 'Create packages/alits-core/tests/manual/ directory structure with fixtures, scripts, creation guides, and results'
+    suggested_action: 'Create packages/alits-core/tests/manual/ directory structure with standardized fixture directories (liveset-basic/, midi-utils/, observable-helper/)'
   - id: 'FIXTURE-002'
     severity: medium
     finding: 'No .amxd fixture devices created for LiveSet, MIDI utilities, or Observable helpers'
@@ -50,7 +50,7 @@ recommendations:
     - action: 'Add tests to reach ≥80% coverage target'
       refs: ['packages/alits-core/tests/']
     - action: 'Create .amxd fixture devices for LiveSet, MIDI utilities, and Observable helpers'
-      refs: ['packages/alits-core/tests/manual/fixtures/']
+      refs: ['packages/alits-core/tests/manual/liveset-basic/fixtures/', 'packages/alits-core/tests/manual/midi-utils/fixtures/', 'packages/alits-core/tests/manual/observable-helper/fixtures/']
   future:
     - action: 'Track, RackDevice, DrumPad will be implemented in future epics per architecture'
       refs: ['docs/architecture-target.md']

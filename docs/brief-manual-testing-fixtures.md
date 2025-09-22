@@ -220,7 +220,7 @@ This approach maximizes AI contribution (full TypeScript generation, validation,
 
 ### Example Fixture Creation Guide
 
-**Creation Guide: `/packages/alits-core/tests/manual/creation/liveSetBasic.md`**
+**Creation Guide: `/packages/alits-core/tests/manual/liveset-basic/creation-guide.md`**
 
 ```markdown
 # Fixture Creation: LiveSet Basic Test
@@ -256,7 +256,7 @@ To create a fixture device that tests basic LiveSet functionality in Max for Liv
 
 ### Example Test Fixture
 
-**Test Script: `/packages/alits-core/tests/manual/scripts/drumPadRename.md`**
+**Test Script: `/packages/alits-core/tests/manual/liveset-basic/test-script.md`**
 
 ```markdown
 # Test: Drum Pad Rename
@@ -286,7 +286,7 @@ To create a fixture device that tests basic LiveSet functionality in Max for Liv
 - [ ] No errors in Max console
 ```
 
-**Result Log: `/packages/alits-core/tests/manual/results/drumPadRename-2025-09-09.yaml`**
+**Result Log: `/packages/alits-core/tests/manual/liveset-basic/results/liveset-basic-test-2025-09-09.yaml`**
 
 ```yaml
 test: Drum Pad Rename
@@ -303,7 +303,7 @@ notes: Works as expected on Live 11.3.25
 Manual testing can incorporate automatic components by capturing Max console output:
 
 * **Console Logging**: Device actions should emit structured log entries with prefixes (e.g., `[Alits/TEST] Pad renamed to C1`).
-* **Log Export**: Testers can copy/paste or export the console log to a `.txt` file in `/packages/*/tests/manual/artifacts/`.
+* **Log Export**: Testers can copy/paste or export the console log to a `.txt` file in `/packages/*/tests/manual/{fixture-name}/results/`.
 * **Analysis**: Scripts can parse exported logs to confirm expected messages appear.
 
 **Example Log-Based Verification:**
@@ -321,7 +321,7 @@ A companion script in `/packages/*/tests/manual/automated/` could scan for `[Ali
 ### Recording Results
 
 * Use **date-stamped files** for each test run.
-* Store results in `/packages/*/tests/manual/results/`.
+* Store results in `/packages/*/tests/manual/{fixture-name}/results/`.
 * Prefer YAML for machine-readability, Markdown for human notes.
 * Require at least one log entry before merging major changes.
 
@@ -332,7 +332,7 @@ A companion script in `/packages/*/tests/manual/automated/` could scan for `[Ali
 * **Traceability Matrix**: Map features → fixtures → result logs.
 * **Regression Testing**: Re-run all fixtures before release.
 * **Defect Logging**: If a test fails, log defect as issue referencing fixture and result file.
-* **Reviewable Evidence**: Store screenshots, screencasts, or exported logs in `/packages/*/tests/manual/artifacts/`.
+* **Reviewable Evidence**: Store screenshots, screencasts, or exported logs in `/packages/*/tests/manual/{fixture-name}/results/`.
 
 ---
 
