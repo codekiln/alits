@@ -346,6 +346,103 @@ Alits is organized as a monorepo using Turborepo for efficient build orchestrati
 
 ---
 
+### Git & Commit Message Standards
+
+**Conventional Emoji Commits Format:**
+
+All commits must follow the [Conventional Emoji Commits](./dev/scm/conventional_commits.md) specification for consistent git history and automated changelog generation.
+
+**Commit Message Structure:**
+```
+<emoji> <type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+**Conventional Emoji Commit Types:**
+* `✨ feat`: A new feature
+* `🩹 fix`: A bug fix
+* `📚 docs`: Documentation only changes
+* `🎨 style`: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
+* `♻️ refactor`: A code change that neither fixes a bug nor adds a feature
+* `🧪 test`: Adding missing tests or correcting existing tests
+* `🔧 chore`: Changes to the build process or auxiliary tools and libraries
+* `🔨 build`: Changes that affect the build system or external dependencies
+* `👷 ci`: Changes to our CI configuration files and scripts
+* `⚡️ perf`: A code change that improves performance
+* `♿️ a11y`: Accessibility improvements
+* `🔒 security`: Security-related changes
+* `🚀 release`: Release-related changes
+* `🔄 revert`: Reverts a previous commit
+
+**Project-Specific Scopes:**
+* `core`: Changes to `@alits/core` package
+* `tracks`: Changes to `@alits/tracks` package
+* `clips`: Changes to `@alits/clips` package
+* `devices`: Changes to `@alits/devices` package
+* `racks`: Changes to `@alits/racks` package
+* `drums`: Changes to `@alits/drums` package
+* `docs`: Documentation changes
+* `build`: Build system changes
+* `ci`: CI/CD pipeline changes
+* `test`: Test-related changes
+
+**Gitmoji Integration:**
+
+Use [gitmoji](https://gitmoji.dev/) to communicate what's happening at each commit point in the project. Examples:
+* `✨ feat(core): add LiveSet abstraction`
+* `🩹 fix(tracks): resolve track selection issue`
+* `📚 docs: update API documentation`
+* `♻️ refactor(devices): simplify device parameter handling`
+
+**Task Reference Requirements:**
+
+Each commit must reference the task being worked on in the footer:
+* **JIRA**: `AB-1234 The Jira Ticket Title`
+* **GitHub Issues**: `#123 The GitHub Issue Title`
+* **Story Files**: `docs/stories/1.2.development-workflow-standards.md`
+
+**Example Commit Messages:**
+```
+✨ feat(core): add LiveSet abstraction with async/await API
+
+Implements basic LiveSet class with LiveAPI integration and error handling.
+Adds TypeScript interfaces for LOM objects and proper async constructor pattern.
+
+docs/stories/1.1.foundation-core-package-setup.md
+```
+
+```
+🩹 fix(tracks): resolve track selection Observable memory leak
+
+Fixes unsubscription issue in observeSelectedTrack() method that was causing
+memory leaks in long-running applications.
+
+🚨 BREAKING CHANGE: observeSelectedTrack() now returns a different Observable type
+
+docs/stories/1.2.track-selection-implementation.md
+```
+
+**Enforcement:**
+
+Commit message standards are enforced through:
+* **Husky git hooks** for commit-msg validation
+* **Commitlint** with conventional commits configuration
+* **Pre-commit hooks** for code quality checks
+* **CI/CD pipeline** validation
+
+For detailed implementation, see [Story 1.2: Development Workflow Standards](../stories/1.2.development-workflow-standards.md).
+
+**Related Documentation:**
+* [Source Code Management Preferences](./My___Dev___Tool___Pref___SCM.md) - Detailed SCM preferences and standards
+* [Conventional Emoji Commits Specification](./dev/scm/conventional_commits.md) - Project-specific implementation
+* [Conventional Emoji Commits Website](https://conventional-emoji-commits.site/) - Official specification
+* [Gitmoji Guide](https://gitmoji.dev/) - Emoji usage guidelines
+
+---
+
 ### Summary
 
 * Use **TypeScript-first design** with camelCase methods and explicit return types.
