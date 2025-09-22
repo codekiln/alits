@@ -340,6 +340,53 @@ Every fixture must have a maxmsp.config.json with this structure:
 }
 ```
 
+## Results Storage and Regression Tracking
+
+### Canonical Results Location
+Each manual test fixture stores its results in its own `results/` directory:
+- **Location**: `packages/{package-name}/tests/manual/{fixture-name}/results/`
+- **Format**: `{fixture-name}-test-YYYY-MM-DD.yaml`
+- **Purpose**: Track test execution history and enable regression analysis
+
+### Regression Tracking Strategy
+Git history in individual fixture `results/` directories provides:
+- **Last Working State**: Find the most recent successful test run
+- **Regression Detection**: Compare current results with historical passes
+- **Component History**: Track when specific functionality last worked
+- **Debugging Context**: Understand what changed between working and broken states
+
+### Results File Format
+```yaml
+test: {Fixture Name} Functionality
+date: YYYY-MM-DD
+tester: [Tester Name]
+environment: "Ableton Live [version], Max for Live [version]"
+status: pass/fail/skip
+notes: |
+  - Device loaded successfully
+  - All tests passed
+  - No errors encountered
+console_output: |
+  [Copy relevant console output here]
+git_commit: [commit hash when test was run]
+build_info: |
+  [BUILD] Entrypoint: {FixtureName}Test
+  [BUILD] Git: v1.0.0-5-g1234567
+  [BUILD] Timestamp: 2025-01-12T10:15:00Z
+```
+
+### Git History Commands for Regression Analysis
+```bash
+# Find last successful test run
+git log --oneline packages/alits-core/tests/manual/liveset-basic/results/
+
+# Find when a specific test last passed
+git log --grep="status: pass" packages/alits-core/tests/manual/liveset-basic/results/
+
+# Compare results between commits
+git diff HEAD~1 packages/alits-core/tests/manual/liveset-basic/results/
+```
+
 ## TypeScript Test Implementation Standards
 
 ### File Structure
