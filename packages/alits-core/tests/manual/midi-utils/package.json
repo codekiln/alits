@@ -6,6 +6,7 @@
   "scripts": {
     "build": "node ../../../../maxmsp-ts/dist/index.js build",
     "dev": "node ../../../../maxmsp-ts/dist/index.js dev",
+    "clean": "rm -f fixtures/*.js",
     "test": "echo 'Manual test - run in Ableton Live'"
   },
   "dependencies": {

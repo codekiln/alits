@@ -6,6 +6,7 @@
   "scripts": {
     "build": "maxmsp build",
     "dev": "maxmsp dev",
+    "clean": "rm -f fixtures/*.js",
     "test": "maxmsp test"
   },
   "dependencies": {
