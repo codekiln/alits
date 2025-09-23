@@ -13,7 +13,7 @@
     "@alits/core": "workspace:*"
   },
   "devDependencies": {
-    "@maxmsp/typescript": "workspace:*",
-    "typescript": "workspace:*"
+    "@codekiln/maxmsp-ts": "workspace:*",
+    "typescript": "^5.6.0"
   }
 }
