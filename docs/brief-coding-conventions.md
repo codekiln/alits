@@ -425,6 +425,16 @@ memory leaks in long-running applications.
 docs/stories/1.2.track-selection-implementation.md
 ```
 
+**Git Workflow Best Practices:**
+
+* **Targeted File Staging**: AI agents should use targeted `git add` commands instead of `git add -A` to maintain precise control over what gets committed:
+  * `git add <specific-file>` - Add individual files
+  * `git add <directory>/` - Add all files in a specific directory
+  * Avoid `git add -A` unless explicitly requested by the user
+
+* **Logical Commit Grouping**: Group related changes into single commits that represent one logical change to the codebase
+* **Review Before Commit**: Always review `git status` and `git diff --cached` before committing to ensure only intended changes are included
+
 **Enforcement:**
 
 Commit message standards are enforced through:

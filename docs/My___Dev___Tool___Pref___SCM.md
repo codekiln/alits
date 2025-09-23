@@ -2,6 +2,9 @@
 	- use git
 	- ## Git preferences
 		- each commit should group files into a single logical change to the codebase
+		- AI agents should use targeted `git add` commands instead of `git add -A` for precise control
+		- prefer `git add <specific-file>` or `git add <directory>/` over `git add -A`
+		- always review `git status` and `git diff --cached` before committing
 	- ## Commit Message Preferences
 		- 1 - use [[Conventional Commits]] as a standard for the commit messages (https://www.conventionalcommits.org/en/v1.0.0/)
 			- Recommendation: download the conventional commits specification and put it at `docs/dev/scm/convention_commits.md`
