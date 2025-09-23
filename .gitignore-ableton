@@ -1,0 +1,74 @@
+# Ableton Live - Git Ignore Configuration
+# Based on analysis of which files should be excluded from version control
+
+# =============================================================================
+# AUTO-GENERATED FILES (Exclude - Live will regenerate these)
+# =============================================================================
+
+# Sample Analysis Files (tempo, warp markers, waveform cache)
+*.asd
+
+# =============================================================================
+# TEMPORARY/CACHE FILES
+# =============================================================================
+
+# Live's temporary files
+*.tmp
+*.temp
+
+# Backup files created by Live
+*.bak
+*~
+
+# =============================================================================
+# USER-SPECIFIC FILES
+# =============================================================================
+
+# Live preferences (user-specific settings)
+# Uncomment if you want to exclude user preferences
+# Preferences.cfg
+
+# =============================================================================
+# LARGE MEDIA FILES (Optional - customize based on your needs)
+# =============================================================================
+
+# Uncomment these if you want to exclude large media files
+# and store them separately (e.g., in cloud storage)
+
+# Audio samples (uncomment if samples are large)
+# *.wav
+# *.aif
+# *.aiff
+# *.mp3
+# *.flac
+
+# Video files
+# *.mov
+# *.mp4
+# *.avi
+
+# =============================================================================
+# THIRD-PARTY CONTENT
+# =============================================================================
+
+# Exclude third-party sample packs and plugins
+# (uncomment and customize based on your project)
+
+# Sample packs
+# Samples/
+# Sample\ Packs/
+
+# Third-party plugins
+# Plugins/
+# VST/
+# AU/
+
+# =============================================================================
+# PROJECT-SPECIFIC EXCLUSIONS
+# =============================================================================
+
+# Add project-specific files to ignore here
+# Examples:
+# Project\ Audio/
+# Exports/
+# Renders/

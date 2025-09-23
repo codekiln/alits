@@ -18,6 +18,9 @@ ENV DO_NOT_TRACK=1
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
+# Create pnpm store directory with correct permissions
+RUN mkdir -p $PNPM_HOME && chown -R node:node $PNPM_HOME && chmod -R 755 $PNPM_HOME
+
 # necessary because of https://github.com/nodejs/corepack/issues/612
 # https://github.com/npm/cli/issues/8075#issuecomment-2628545611
 RUN npm install -g corepack@latest --force
@@ -28,10 +31,19 @@ RUN node -v
 RUN corepack use pnpm@latest
 RUN corepack enable pnpm
 
+# Configure pnpm
+RUN pnpm config set store-dir $PNPM_HOME
+
 COPY . /app
 WORKDIR /app
 
 # Install dependencies with BuildKit cache mount for better performance
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --no-frozen-lockfile
+
+# Configure Git for Ableton Live files during build
+RUN if [ -f "scripts/setup-ableton-git.sh" ]; then \
+        chmod +x scripts/setup-ableton-git.sh && \
+        ./scripts/setup-ableton-git.sh --global; \
+    fi
 
 CMD ["sleep", "infinity"]
