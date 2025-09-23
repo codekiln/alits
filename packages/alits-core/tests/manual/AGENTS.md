@@ -108,12 +108,6 @@ function printBuildInfo() {
 4. **Document changes and rationale**
 5. **Update build identification**
 
-#### Git Workflow Standards
-- **Targeted staging**: Use `git add <specific-files>` instead of `git add -A`
-- **Review before commit**: Always run `git status` to verify staged files
-- **Conventional commits**: Use emoji prefixes and proper commit message format
-- **Focused commits**: Make commits that represent logical units of work
-- **Clear commit messages**: Include story reference and descriptive summary
 
 ### Analyst Agent Guidelines
 
@@ -163,9 +157,6 @@ function printBuildInfo() {
 - **Don't**: Fix symptoms without understanding causes
 - **Do**: Implement systematic solutions
 
-### 5. Indiscriminate Git Staging
-- **Don't**: Use `git add -A` without reviewing changes
-- **Do**: Use targeted `git add <specific-files>` and review with `git status`
 
 ## Tools and Resources
 
@@ -179,12 +170,6 @@ function printBuildInfo() {
 - **Rollup**: For bundling with source maps
 - **Git**: For version control and build identification
 - **pnpm**: For package management
-
-### Git Best Practices
-- **Use targeted git add**: Always use `git add <specific-files>` instead of `git add -A`
-- **Review changes**: Check `git status` before committing to ensure only intended files are staged
-- **Commit granularity**: Make focused commits with clear, descriptive messages
-- **Follow conventional commits**: Use emoji prefixes and proper commit message format
 
 ### Testing Infrastructure
 - **Manual Test Fixtures**: For Max 8 compatibility testing
