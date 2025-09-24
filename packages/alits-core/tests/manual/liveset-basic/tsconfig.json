@@ -9,13 +9,17 @@
     "sourceMap": false,
     "outDir": "./fixtures",
     "baseUrl": ".",
-    "types": ["maxmsp"],
+    "types": [],
+    "typeRoots": ["../../../../node_modules/@types", "../../../node_modules/@types"],
+    "paths": {
+      "@alits/core": ["../../../dist/index.d.ts"]
+    },
     "lib": ["es5"],
     "moduleResolution": "node",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true
   },
-  "include": ["./src/**/*Max8.ts"],
-  "exclude": ["./src/LiveSetBasicTest.ts"]
+  "include": ["./src/**/*.ts"],
+  "exclude": []
 }

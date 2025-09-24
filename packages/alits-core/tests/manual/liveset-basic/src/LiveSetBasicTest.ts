@@ -1,8 +1,29 @@
-// LiveSet Basic Functionality Test
-// This TypeScript file compiles to ES5 JavaScript for Max for Live runtime
+// LiveSet Basic Functionality Test - Max 8 Compatible with Promise Polyfill
+// This version uses async/await with the Max 8 Promise polyfill
 
-// Import the actual @alits/core package
-import { LiveSet } from "@alits/core";
+// Max for Live API declarations
+declare var inlets: number;
+declare var outlets: number;
+declare var autowatch: number;
+declare var post: (message: string) => void;
+
+declare class LiveAPI {
+    constructor(objectName: string);
+    call(method: string, ...args: any[]): any;
+    get(path: string): any;
+    set(path: string, value: any): void;
+}
+
+declare class Task {
+    constructor(callback: () => void, context?: any);
+    schedule(delay: number): void;
+}
+
+// Import the actual @alits/core package (includes Promise polyfill and declarations)
+import { LiveSet, PromiseConstructor as MaxPromiseConstructor, Promise as MaxPromise, PromiseLike as MaxPromiseLike } from "@alits/core";
+
+// Use imported Promise types for TypeScript compilation
+declare var Promise: MaxPromiseConstructor;
 
 // Max for Live script setup
 inlets = 1;
