@@ -11,6 +11,8 @@ function bang() {
 
 bang();
 
-// Required for Max compatibility
+// .ts files with this at the end become a script usable in a [js] or [jsui] object
+// If you are going to require your module instead of import it then you should comment
+// these two lines out of this script
 let module = {};
 export = {};
