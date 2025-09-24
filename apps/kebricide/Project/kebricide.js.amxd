@@ -9,7 +9,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 323.0, 185.0, 584.0, 530.0 ],
+		"rect" : [ -1256.0, 503.0, 479.0, 458.0 ],
 		"openrect" : [ 0.0, 0.0, 0.0, 169.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
@@ -40,25 +40,49 @@
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
 				"box" : 				{
-					"id" : "obj-12",
+					"id" : "obj-16",
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 358.0, 44.0, 46.0, 20.0 ],
-					"text" : "compile"
+					"patching_rect" : [ 308.0, 87.0, 104.0, 20.0 ],
+					"text" : "prepend test_tempo"
 				}
 
 			}
 , 			{
 				"box" : 				{
 					"id" : "obj-10",
+					"maxclass" : "number",
+					"numinlets" : 1,
+					"numoutlets" : 2,
+					"outlettype" : [ "", "bang" ],
+					"parameter_enable" : 0,
+					"patching_rect" : [ 382.0, 32.0, 50.0, 20.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-14",
 					"maxclass" : "button",
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "bang" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 277.0, 34.0, 24.0, 24.0 ]
+					"patching_rect" : [ 303.0, 20.0, 24.0, 24.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-12",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 226.0, 33.0, 46.0, 20.0 ],
+					"text" : "compile"
 				}
 
 			}
@@ -69,13 +93,13 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 282.0, 122.0, 54.0, 20.0 ],
+					"patching_rect" : [ 214.0, 136.0, 75.0, 20.0 ],
 					"saved_object_attributes" : 					{
-						"filename" : "Main.js",
+						"filename" : "kebricide.js",
 						"parameter_enable" : 0
 					}
 ,
-					"text" : "js Main.js"
+					"text" : "js kebricide.js"
 				}
 
 			}
@@ -166,7 +190,7 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-6", 0 ],
+					"destination" : [ "obj-16", 0 ],
 					"source" : [ "obj-10", 0 ]
 				}
 
@@ -175,6 +199,20 @@
 				"patchline" : 				{
 					"destination" : [ "obj-6", 0 ],
 					"source" : [ "obj-12", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-6", 0 ],
+					"source" : [ "obj-14", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-6", 0 ],
+					"source" : [ "obj-16", 0 ]
 				}
 
 			}
@@ -198,6 +236,10 @@
 				"patchers" : 				{
 
 				}
+,
+				"code" : 				{
+
+				}
 
 			}
 ,
@@ -219,14 +261,7 @@
 			"includepackages" : 0
 		}
 ,
-		"autosave" : 0,
-		"saved_attribute_attributes" : 		{
-			"default_plcolor" : 			{
-				"expression" : ""
-			}
-
-		}
-
+		"autosave" : 0
 	}
 
 }
