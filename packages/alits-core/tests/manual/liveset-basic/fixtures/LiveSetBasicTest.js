@@ -1,3 +1,151 @@
+// Max 8 compatible Promise polyfill
+// Uses Max's Task object instead of setTimeout
+// Always execute to ensure Promise is properly defined
+
+var PENDING = 'pending';
+var FULFILLED = 'fulfilled';
+var REJECTED = 'rejected';
+
+function Max8Promise(executor) {
+    this.state = PENDING;
+    this.value = undefined;
+    this.handlers = [];
+    
+    var self = this;
+    try {
+        executor(
+            function(value) { self.resolve(value); },
+            function(reason) { self.reject(reason); }
+        );
+    } catch (error) {
+        self.reject(error);
+    }
+}
+    
+    Max8Promise.prototype.resolve = function(value) {
+        if (this.state === PENDING) {
+            this.state = FULFILLED;
+            this.value = value;
+            this.executeHandlers();
+        }
+    };
+    
+    Max8Promise.prototype.reject = function(reason) {
+        if (this.state === PENDING) {
+            this.state = REJECTED;
+            this.value = reason;
+            this.executeHandlers();
+        }
+    };
+    
+    Max8Promise.prototype.executeHandlers = function() {
+        var self = this;
+        var handlers = this.handlers.slice();
+        this.handlers = [];
+        
+        // Use Max Task object for async execution
+        var task = new Task(function() {
+            handlers.forEach(function(handler) {
+                try {
+                    if (self.state === FULFILLED) {
+                        handler.onFulfilled(self.value);
+                    } else if (self.state === REJECTED) {
+                        handler.onRejected(self.value);
+                    }
+                } catch (error) {
+                    // Handle errors in handlers
+                }
+            });
+        }, this);
+        
+        task.schedule(0); // Execute on next tick
+    };
+    
+    Max8Promise.prototype.then = function(onFulfilled, onRejected) {
+        var self = this;
+        
+        return new Max8Promise(function(resolve, reject) {
+            var handler = {
+                onFulfilled: function(value) {
+                    try {
+                        if (typeof onFulfilled === 'function') {
+                            resolve(onFulfilled(value));
+                        } else {
+                            resolve(value);
+                        }
+                    } catch (error) {
+                        reject(error);
+                    }
+                },
+                onRejected: function(reason) {
+                    try {
+                        if (typeof onRejected === 'function') {
+                            resolve(onRejected(reason));
+                        } else {
+                            reject(reason);
+                        }
+                    } catch (error) {
+                        reject(error);
+                    }
+                }
+            };
+            
+            if (self.state === PENDING) {
+                self.handlers.push(handler);
+            } else {
+                self.executeHandlers();
+            }
+        });
+    };
+    
+    Max8Promise.prototype.catch = function(onRejected) {
+        return this.then(null, onRejected);
+    };
+    
+    Max8Promise.resolve = function(value) {
+        return new Max8Promise(function(resolve) {
+            resolve(value);
+        });
+    };
+    
+    Max8Promise.reject = function(reason) {
+        return new Max8Promise(function(resolve, reject) {
+            reject(reason);
+        });
+    };
+    
+    Max8Promise.all = function(promises) {
+        return new Max8Promise(function(resolve, reject) {
+            if (!Array.isArray(promises)) {
+                reject(new TypeError('Promise.all requires an array'));
+                return;
+            }
+            
+            if (promises.length === 0) {
+                resolve([]);
+                return;
+            }
+            
+            var results = new Array(promises.length);
+            var completed = 0;
+            
+            promises.forEach(function(promise, index) {
+                Max8Promise.resolve(promise).then(function(value) {
+                    results[index] = value;
+                    completed++;
+                    if (completed === promises.length) {
+                        resolve(results);
+                    }
+                }, reject);
+            });
+        });
+    };
+    
+    // Set global Promise - Max 8 compatible
+    // Always declare Promise globally to ensure it's accessible
+    var Promise = Max8Promise;
+
+
 "use strict";
 // LiveSet Basic Functionality Test - Max 8 Compatible with Promise Polyfill
 // This version uses async/await with the Max 8 Promise polyfill
@@ -37,10 +185,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-// Load Promise polyfill FIRST before any async/await code
+// Import the actual @alits/core package (includes Promise polyfill and declarations)
 var core_1 = require("alits_index.js");
-// Extract LiveSet from the core library
-var LiveSet = core_1.LiveSet;
 // Max for Live script setup
 inlets = 1;
 outlets = 1;
@@ -54,7 +200,7 @@ var LiveSetBasicTest = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 try {
-                    this.liveSet = new LiveSet(this.liveApiSet);
+                    this.liveSet = new core_1.LiveSet(this.liveApiSet);
                     // LiveSet initializes automatically in constructor
                     post('[Alits/TEST] LiveSet initialized successfully\n');
                     post("[Alits/TEST] Tempo: ".concat(this.liveSet.tempo, "\n"));
@@ -167,13 +313,109 @@ var LiveSetBasicTest = /** @class */ (function () {
 var testApp = new LiveSetBasicTest();
 // Expose functions to Max for Live
 function bang() {
-    testApp.initialize();
+    post('[Alits/TEST] ===========================================\n');
+    post('[Alits/TEST] LiveSet Basic Test Suite Starting\n');
+    post('[Alits/TEST] ===========================================\n');
+    // Test if Promise polyfill is working
+    post('[Alits/TEST] DEBUG: Testing Promise polyfill...\n');
+    try {
+        var testPromise_1 = new Promise(function (resolve) {
+            post('[Alits/TEST] DEBUG: Promise constructor works\n');
+            resolve('test');
+        });
+        // Use Max Task object to handle Promise resolution
+        var task = new Task(function () {
+            testPromise_1.then(function (result) {
+                post("[Alits/TEST] DEBUG: Promise.then() works, result: ".concat(result, "\n"));
+                // Now run the actual test suite
+                runCompleteTestSuite().then(function () {
+                    post('[Alits/TEST] ===========================================\n');
+                    post('[Alits/TEST] Test Suite COMPLETED Successfully\n');
+                    post('[Alits/TEST] ===========================================\n');
+                }).catch(function (error) {
+                    post("[Alits/TEST] Test suite error: ".concat(error.message, "\n"));
+                    post('[Alits/TEST] ===========================================\n');
+                    post('[Alits/TEST] Test Suite FAILED\n');
+                    post('[Alits/TEST] ===========================================\n');
+                });
+            }).catch(function (error) {
+                post("[Alits/TEST] DEBUG: Promise test failed: ".concat(error.message, "\n"));
+            });
+        });
+        // Schedule the task to run immediately
+        task.schedule(0);
+    }
+    catch (error) {
+        post("[Alits/TEST] DEBUG: Promise constructor failed: ".concat(error.message, "\n"));
+    }
+    post('[Alits/TEST] DEBUG: bang() function completed\n');
+}
+// Run the complete test suite
+function runCompleteTestSuite() {
+    return __awaiter(this, void 0, void 0, function () {
+        var error_3;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    post('[Alits/TEST] DEBUG: runCompleteTestSuite started\n');
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 7, , 8]);
+                    // Step 1: Initialize LiveSet
+                    post('[Alits/TEST] Step 1: Initializing LiveSet...\n');
+                    return [4 /*yield*/, testApp.initialize()];
+                case 2:
+                    _a.sent();
+                    post('[Alits/TEST] DEBUG: initialize() completed\n');
+                    // Step 2: Test tempo functionality
+                    post('[Alits/TEST] Step 2: Testing tempo functionality...\n');
+                    return [4 /*yield*/, testApp.testTempoChange(120)];
+                case 3:
+                    _a.sent();
+                    post('[Alits/TEST] DEBUG: first tempo test completed\n');
+                    return [4 /*yield*/, testApp.testTempoChange(140)];
+                case 4:
+                    _a.sent();
+                    post('[Alits/TEST] DEBUG: second tempo test completed\n');
+                    // Step 3: Test time signature functionality
+                    post('[Alits/TEST] Step 3: Testing time signature functionality...\n');
+                    return [4 /*yield*/, testApp.testTimeSignatureChange(4, 4)];
+                case 5:
+                    _a.sent();
+                    post('[Alits/TEST] DEBUG: first time signature test completed\n');
+                    return [4 /*yield*/, testApp.testTimeSignatureChange(3, 4)];
+                case 6:
+                    _a.sent();
+                    post('[Alits/TEST] DEBUG: second time signature test completed\n');
+                    // Step 4: Test track access
+                    post('[Alits/TEST] Step 4: Testing track access...\n');
+                    testApp.testTrackAccess();
+                    post('[Alits/TEST] DEBUG: track access test completed\n');
+                    // Step 5: Test scene access
+                    post('[Alits/TEST] Step 5: Testing scene access...\n');
+                    testApp.testSceneAccess();
+                    post('[Alits/TEST] DEBUG: scene access test completed\n');
+                    return [3 /*break*/, 8];
+                case 7:
+                    error_3 = _a.sent();
+                    post("[Alits/TEST] DEBUG: Error caught in runCompleteTestSuite: ".concat(error_3.message, "\n"));
+                    post("[Alits/TEST] DEBUG: Error stack: ".concat(error_3.stack || 'No stack trace', "\n"));
+                    post("[Alits/TEST] Test suite failed: ".concat(error_3.message, "\n"));
+                    throw error_3;
+                case 8: return [2 /*return*/];
+            }
+        });
+    });
 }
 function test_tempo(tempo) {
-    testApp.testTempoChange(tempo);
+    testApp.testTempoChange(tempo).catch(function (error) {
+        post("[Alits/TEST] Tempo test error: ".concat(error.message, "\n"));
+    });
 }
 function test_time_signature(numerator, denominator) {
-    testApp.testTimeSignatureChange(numerator, denominator);
+    testApp.testTimeSignatureChange(numerator, denominator).catch(function (error) {
+        post("[Alits/TEST] Time signature test error: ".concat(error.message, "\n"));
+    });
 }
 function test_tracks() {
     testApp.testTrackAccess();

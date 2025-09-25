@@ -1,6 +1,6 @@
 // @alits/core Build
-// Build: 2025-09-24T10:47:07.519Z
-// Git: c1163c1
+// Build: 2025-09-24T11:12:04.810Z
+// Git: 99c0707
 // Entrypoint: index.ts
 // Minified: No (Debug Build)
 // RxJS: Included
@@ -2238,6 +2238,12 @@ var MIDIUtils = /** @class */ (function () {
     return MIDIUtils;
 }());
 
+// Max 8 compatible Promise polyfill
+// Simple utility function for testing
+function greet() {
+    return "Hello! Writing from typescript!";
+}
+
 exports.BehaviorSubject = BehaviorSubject;
 exports.LiveSet = LiveSetImpl;
 exports.MIDIUtils = MIDIUtils;
@@ -2245,6 +2251,7 @@ exports.Observable = Observable;
 exports.ObservablePropertyHelper = ObservablePropertyHelper;
 exports.Subject = Subject;
 exports.distinctUntilChanged = distinctUntilChanged;
+exports.greet = greet;
 exports.map = map;
 exports.observeProperties = observeProperties;
 exports.observeProperty = observeProperty;
