@@ -1,9 +1,9 @@
 const typescript = require("@rollup/plugin-typescript");
 const resolve = require("@rollup/plugin-node-resolve");
 const commonjs = require("@rollup/plugin-commonjs");
-const terser = require("@rollup/plugin-terser");
 
 module.exports = [
+  // Single build with RxJS - NON-MINIFIED for debugging
   {
     input: "src/index.ts",
     output: [
@@ -11,11 +11,26 @@ module.exports = [
         file: "dist/index.js",
         format: "cjs",
         sourcemap: true,
+        banner: `// @alits/core Build
+// Build: ${new Date().toISOString()}
+// Git: ${getGitInfo()}
+// Entrypoint: index.ts
+// Minified: No (Debug Build)
+// RxJS: Included
+// Max 8 Compatible: Yes
+`
       },
       {
         file: "dist/index.esm.js",
         format: "es",
         sourcemap: true,
+        banner: `// @alits/core Build (ES Modules)
+// Build: ${new Date().toISOString()}
+// Git: ${getGitInfo()}
+// Entrypoint: index.ts
+// Minified: No (Debug Build)
+// RxJS: Included
+`
       },
     ],
     plugins: [
@@ -26,7 +41,16 @@ module.exports = [
       }),
       resolve(),
       commonjs(),
-      terser(),
+      // NO terser() - keep unminified for debugging
     ],
   },
 ];
+
+function getGitInfo() {
+  try {
+    const { execSync } = require('child_process');
+    return execSync('git describe --tags --always', { encoding: 'utf8' }).trim();
+  } catch (e) {
+    return 'unknown';
+  }
+}

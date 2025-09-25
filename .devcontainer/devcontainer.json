@@ -4,6 +4,8 @@
   "service": "node",
   "workspaceFolder": "/app",
   "shutdownAction": "stopCompose",
+  "postCreateCommand": ".devcontainer/scripts/postCreateCommand.sh",
+  "postStartCommand": ".devcontainer/scripts/postStartCommand.sh",
   "customizations": {
     "vscode": {
       "extensions": [

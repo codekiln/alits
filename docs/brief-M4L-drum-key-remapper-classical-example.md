@@ -91,10 +91,10 @@ A Max for Live MIDI effect device that, when placed on a track containing a Drum
 
 This classical implementation would be validated through manual testing fixtures:
 
-* **Manual Testing Fixtures**: A `.amxd` device fixture in `/packages/*/tests/manual/fixtures/` exercises the complete functionality within Ableton Live's Max for Live runtime
-* **Test Scripts**: Human-readable test scripts in `/packages/*/tests/manual/scripts/` guide manual validation
+* **Manual Testing Fixtures**: A `.amxd` device fixture in `/packages/*/tests/manual/{fixture-name}/fixtures/` exercises the complete functionality within Ableton Live's Max for Live runtime
+* **Test Scripts**: Human-readable test scripts in `/packages/*/tests/manual/{fixture-name}/test-script.md` guide manual validation
 * **Result Logging**: Structured console logging using `post()` and `error()` enables semi-automated validation of test results
-* **Creation Guides**: Step-by-step guides in `/packages/*/tests/manual/creation/` document how to create the fixture device
+* **Creation Guides**: Step-by-step guides in `/packages/*/tests/manual/{fixture-name}/creation-guide.md` document how to create the fixture device
 
 For detailed information on the manual testing fixtures approach, see **[Manual Testing Fixtures](./brief-manual-testing-fixtures.md)**.
 

@@ -2,7 +2,8 @@
   "compilerOptions": {
     "target": "es5",
     "module": "esnext",
-    "lib": ["dom", "es2015"],
+    "lib": ["es5", "es2015.promise"],
+    "types": ["maxmsp"],
     "declaration": true,
     "declarationDir": "dist",
     "strict": true,
@@ -11,7 +12,11 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "downlevelIteration": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "noImplicitAny": false
   },
   "typedocOptions": {
     "entryPoints": ["src/index.ts"],

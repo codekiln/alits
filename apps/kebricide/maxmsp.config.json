@@ -4,7 +4,8 @@
     "@alits/core": {
       "alias": "alits",
       "files": ["index.js"],
-      "path": ""
+      "path": "",
+      "exclude": ["rxjs"]
     }
   }
 }

@@ -1,0 +1,25 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "module": "CommonJS",
+    "target": "ES5",
+    "ignoreDeprecations": "5.0",
+    "strict": false,
+    "noImplicitAny": false,
+    "sourceMap": false,
+    "outDir": "./fixtures",
+    "baseUrl": ".",
+    "types": [],
+    "typeRoots": ["../../../../node_modules/@types", "../../../node_modules/@types"],
+    "paths": {
+      "@alits/core": ["../../../dist/index.d.ts"]
+    },
+    "lib": ["es5"],
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true
+  },
+  "include": ["./src/**/*.ts"],
+  "exclude": []
+}

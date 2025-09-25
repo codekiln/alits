@@ -1,8 +1,0 @@
----
-description: Current Project Task
-globs: 
----
-
-# The current project task is a github issue
-- we have checked out a feature branch for: [issue23-create-alits-core-pkg.md](mdc:gh/issue23-create-alits-core-pkg.md)
-- please use the github issue as a guideline for implementation

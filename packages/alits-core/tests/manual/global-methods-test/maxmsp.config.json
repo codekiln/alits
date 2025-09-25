@@ -1,0 +1,9 @@
+{
+  "entry": "src/GlobalMethodsTest.ts",
+  "output": "fixtures/GlobalMethodsTest.js",
+  "bundles": {
+    "@alits/core": "fixtures/alits_debug.js"
+  },
+  "target": "max8",
+  "format": "cjs"
+}
