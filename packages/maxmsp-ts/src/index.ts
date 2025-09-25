@@ -120,6 +120,67 @@ async function getTsConfigOutputDir(): Promise<string> {
   }
 }
 
+// Function to inject Promise polyfill into JavaScript files
+async function injectPromisePolyfill(baseDir: string) {
+  try {
+    // Try multiple possible paths for the Promise polyfill
+    const possiblePaths = [
+      "/app/packages/alits-core/src/max8-promise-polyfill.js", // Absolute path
+      path.join(process.cwd(), "packages", "alits-core", "src", "max8-promise-polyfill.js"),
+      path.join(process.cwd(), "..", "packages", "alits-core", "src", "max8-promise-polyfill.js"),
+      path.join(process.cwd(), "..", "..", "packages", "alits-core", "src", "max8-promise-polyfill.js"),
+      path.join(process.cwd(), "..", "..", "..", "packages", "alits-core", "src", "max8-promise-polyfill.js"),
+      path.join(process.cwd(), "..", "..", "..", "..", "packages", "alits-core", "src", "max8-promise-polyfill.js"),
+      path.resolve("packages/alits-core/src/max8-promise-polyfill.js"),
+      path.resolve("../packages/alits-core/src/max8-promise-polyfill.js"),
+      path.resolve("../../packages/alits-core/src/max8-promise-polyfill.js"),
+      path.resolve("../../../packages/alits-core/src/max8-promise-polyfill.js"),
+      path.resolve("../../../../packages/alits-core/src/max8-promise-polyfill.js")
+    ];
+    
+    let polyfillPath: string | null = null;
+    for (const testPath of possiblePaths) {
+      try {
+        await fs.access(testPath);
+        polyfillPath = testPath;
+        console.log(`Found Promise polyfill at: ${polyfillPath}`);
+        break;
+      } catch {
+        // Continue to next path
+      }
+    }
+    
+    if (!polyfillPath) {
+      console.log("Promise polyfill not found in any expected location, skipping injection");
+      console.log("Searched paths:", possiblePaths);
+      return;
+    }
+    
+    const polyfillContent = await fs.readFile(polyfillPath, "utf-8");
+    
+    // Get all JavaScript files recursively from baseDir
+    const jsFiles = await getAllJsFiles(baseDir);
+    
+    for (const filePath of jsFiles) {
+      // Skip files that already have the polyfill injected (check for polyfill signature)
+      const content = await fs.readFile(filePath, "utf-8");
+      
+      if (content.includes("Max 8 compatible Promise polyfill")) {
+        console.log(`Skipping ${filePath} - Promise polyfill already injected`);
+        continue;
+      }
+      
+      // Inject polyfill at the very top of the file
+      const newContent = polyfillContent + "\n\n" + content;
+      
+      await fs.writeFile(filePath, newContent, "utf-8");
+      console.log(`Injected Promise polyfill into ${filePath}`);
+    }
+  } catch (error) {
+    console.error("Error injecting Promise polyfill:", error);
+  }
+}
+
 // Post-build command logic
 async function postBuild() {
   const config = await readOrCreateConfig();
@@ -168,6 +229,9 @@ async function postBuild() {
       config
     );
   }
+
+  // Inject Promise polyfill into all compiled JavaScript files
+  await injectPromisePolyfill(tsConfigOutputDir);
 
   console.log("Post-build completed successfully.");
 }

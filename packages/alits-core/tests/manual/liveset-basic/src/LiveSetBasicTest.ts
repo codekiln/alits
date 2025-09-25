@@ -129,15 +129,104 @@ const testApp = new LiveSetBasicTest();
 
 // Expose functions to Max for Live
 function bang() {
-    testApp.initialize();
+    post('[Alits/TEST] ===========================================\n');
+    post('[Alits/TEST] LiveSet Basic Test Suite Starting\n');
+    post('[Alits/TEST] ===========================================\n');
+    
+    // Test if Promise polyfill is working
+    post('[Alits/TEST] DEBUG: Testing Promise polyfill...\n');
+    try {
+        const testPromise = new Promise((resolve) => {
+            post('[Alits/TEST] DEBUG: Promise constructor works\n');
+            resolve('test');
+        });
+        
+        // Use Max Task object to handle Promise resolution
+        const task = new Task(() => {
+            testPromise.then((result) => {
+                post(`[Alits/TEST] DEBUG: Promise.then() works, result: ${result}\n`);
+                
+                // Now run the actual test suite
+                runCompleteTestSuite().then(() => {
+                    post('[Alits/TEST] ===========================================\n');
+                    post('[Alits/TEST] Test Suite COMPLETED Successfully\n');
+                    post('[Alits/TEST] ===========================================\n');
+                }).catch((error: any) => {
+                    post(`[Alits/TEST] Test suite error: ${error.message}\n`);
+                    post('[Alits/TEST] ===========================================\n');
+                    post('[Alits/TEST] Test Suite FAILED\n');
+                    post('[Alits/TEST] ===========================================\n');
+                });
+                
+            }).catch((error: any) => {
+                post(`[Alits/TEST] DEBUG: Promise test failed: ${error.message}\n`);
+            });
+        });
+        
+        // Schedule the task to run immediately
+        task.schedule(0);
+        
+    } catch (error: any) {
+        post(`[Alits/TEST] DEBUG: Promise constructor failed: ${error.message}\n`);
+    }
+    
+    post('[Alits/TEST] DEBUG: bang() function completed\n');
+}
+
+// Run the complete test suite
+async function runCompleteTestSuite(): Promise<void> {
+    post('[Alits/TEST] DEBUG: runCompleteTestSuite started\n');
+    
+    try {
+        // Step 1: Initialize LiveSet
+        post('[Alits/TEST] Step 1: Initializing LiveSet...\n');
+        await testApp.initialize();
+        post('[Alits/TEST] DEBUG: initialize() completed\n');
+        
+        // Step 2: Test tempo functionality
+        post('[Alits/TEST] Step 2: Testing tempo functionality...\n');
+        await testApp.testTempoChange(120);
+        post('[Alits/TEST] DEBUG: first tempo test completed\n');
+        await testApp.testTempoChange(140);
+        post('[Alits/TEST] DEBUG: second tempo test completed\n');
+        
+        // Step 3: Test time signature functionality
+        post('[Alits/TEST] Step 3: Testing time signature functionality...\n');
+        await testApp.testTimeSignatureChange(4, 4);
+        post('[Alits/TEST] DEBUG: first time signature test completed\n');
+        await testApp.testTimeSignatureChange(3, 4);
+        post('[Alits/TEST] DEBUG: second time signature test completed\n');
+        
+        // Step 4: Test track access
+        post('[Alits/TEST] Step 4: Testing track access...\n');
+        testApp.testTrackAccess();
+        post('[Alits/TEST] DEBUG: track access test completed\n');
+        
+        // Step 5: Test scene access
+        post('[Alits/TEST] Step 5: Testing scene access...\n');
+        testApp.testSceneAccess();
+        post('[Alits/TEST] DEBUG: scene access test completed\n');
+        
+        // Final summary - success message moved to .then() block
+        
+    } catch (error: any) {
+        post(`[Alits/TEST] DEBUG: Error caught in runCompleteTestSuite: ${error.message}\n`);
+        post(`[Alits/TEST] DEBUG: Error stack: ${error.stack || 'No stack trace'}\n`);
+        post(`[Alits/TEST] Test suite failed: ${error.message}\n`);
+        throw error;
+    }
 }
 
 function test_tempo(tempo: number) {
-    testApp.testTempoChange(tempo);
+    testApp.testTempoChange(tempo).catch((error: any) => {
+        post(`[Alits/TEST] Tempo test error: ${error.message}\n`);
+    });
 }
 
 function test_time_signature(numerator: number, denominator: number) {
-    testApp.testTimeSignatureChange(numerator, denominator);
+    testApp.testTimeSignatureChange(numerator, denominator).catch((error: any) => {
+        post(`[Alits/TEST] Time signature test error: ${error.message}\n`);
+    });
 }
 
 function test_tracks() {

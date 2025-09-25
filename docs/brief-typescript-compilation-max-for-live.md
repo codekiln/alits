@@ -387,6 +387,32 @@ function myFunc() { }
 function regular() { }
 ```
 
+**Promise and async/await Support:**
+
+Max for Live doesn't have native Promise support, but the `maxmsp-ts` build process automatically injects a Promise polyfill to enable async/await functionality:
+
+```typescript
+// ✅ This works in Max for Live (with polyfill injection)
+async function initializeLiveSet() {
+  const liveSet = new LiveSet(liveApiSet);
+  await liveSet.setTempo(120);
+  post("LiveSet initialized\n");
+}
+
+// The polyfill is automatically injected at the top of compiled files
+```
+
+**How Promise Polyfill Injection Works:**
+
+1. **Automatic Injection**: The `maxmsp-ts` tool automatically injects the Promise polyfill at the top of all compiled JavaScript files
+2. **Max 8 Compatible**: Uses Max's `Task` object instead of `setTimeout` for async execution
+3. **Global Availability**: Makes `Promise` available globally before any TypeScript async/await helpers execute
+4. **No Manual Setup**: Developers don't need to manually import or configure the polyfill
+
+**Polyfill Location**: `packages/alits-core/src/max8-promise-polyfill.js`
+
+**Build Process Integration**: The polyfill injection happens during the post-build phase, ensuring all compiled files have Promise support before being used in Max for Live devices.
+
 ### 3. Node.js APIs
 ```typescript
 // ❌ These don't exist in Max

@@ -1,33 +1,26 @@
 // Max 8 compatible Promise polyfill
 // Uses Max's Task object instead of setTimeout
+// Always execute to ensure Promise is properly defined
 
-(function() {
-    'use strict';
+var PENDING = 'pending';
+var FULFILLED = 'fulfilled';
+var REJECTED = 'rejected';
+
+function Max8Promise(executor) {
+    this.state = PENDING;
+    this.value = undefined;
+    this.handlers = [];
     
-    // Check if Promise already exists
-    if (typeof Promise !== 'undefined') {
-        return;
+    var self = this;
+    try {
+        executor(
+            function(value) { self.resolve(value); },
+            function(reason) { self.reject(reason); }
+        );
+    } catch (error) {
+        self.reject(error);
     }
-    
-    var PENDING = 'pending';
-    var FULFILLED = 'fulfilled';
-    var REJECTED = 'rejected';
-    
-    function Max8Promise(executor) {
-        this.state = PENDING;
-        this.value = undefined;
-        this.handlers = [];
-        
-        var self = this;
-        try {
-            executor(
-                function(value) { self.resolve(value); },
-                function(reason) { self.reject(reason); }
-            );
-        } catch (error) {
-            self.reject(error);
-        }
-    }
+}
     
     Max8Promise.prototype.resolve = function(value) {
         if (this.state === PENDING) {
@@ -149,21 +142,5 @@
     };
     
     // Set global Promise - Max 8 compatible
-    if (typeof global !== 'undefined') {
-        global.Promise = Max8Promise;
-    } else if (typeof window !== 'undefined') {
-        window.Promise = Max8Promise;
-    } else {
-        // Fallback for Max 8 environment
-        try {
-            this.Promise = Max8Promise;
-        } catch (e) {
-            // Max 8 doesn't have global 'this', use alternative
-            if (typeof Promise === 'undefined') {
-                // Create global Promise if it doesn't exist
-                eval('Promise = Max8Promise');
-            }
-        }
-    }
-    
-})();
+    // Always declare Promise globally to ensure it's accessible
+    var Promise = Max8Promise;

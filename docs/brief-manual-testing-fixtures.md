@@ -17,7 +17,9 @@ The goal is to minimize the feedback loop between code changes and real-world ve
 ### Principles
 
 * **Clear Separation**: Automated unit tests and manual testing fixtures both live within each package (`/packages/*/tests/` and `/packages/*/tests/manual/` respectively).
-* **Rapid Setup**: Each manual fixture should be a small, focused `.amxd` device that demonstrates one feature. To begin with, these devices must be created and saved manually in Ableton Live’s Max for Live UI (due to licensing restrictions), then added to the repo for use as fixtures.
+* **Single-Bang Testing**: Each manual fixture must be completely self-contained and test all functionality with a single bang message. No additional message objects or manual intervention should be required to execute the complete test suite.
+* **Rapid Setup**: Each manual fixture should be a small, focused `.amxd` device that demonstrates one feature. To begin with, these devices must be created and saved manually in Ableton Live's Max for Live UI (due to licensing restrictions), then added to the repo for use as fixtures.
+* **Comprehensive Output**: Test fixtures must provide detailed, structured console output with clear pass/fail indicators for each test step, enabling AI verification without human interpretation.
 * **Clarity**: Test scripts must use step-by-step instructions suitable for non-developer testers.
 * **Traceability**: Every manual test run should be logged with results, dates, and tester identity.
 * **Reusability**: Fixtures should be reusable across regression tests.
@@ -94,11 +96,13 @@ Manual testing fixtures use Max for Live's built-in TypeScript compilation syste
 
 #### Key Principles:
 
-1. **Co-located Files**: Each `.amxd` device has a corresponding `.ts` file in the same directory
-2. **Max TypeScript Compilation**: The `.ts` file uses Max's built-in TypeScript compiler (no external build step needed)
-3. **Import Support**: Fixtures can import from the package's compiled source using standard ES modules
-4. **AI Validation**: AI can validate TypeScript syntax, imports, and logic before human creates the `.amxd`
-5. **Live Set Integration**: Each fixture includes both `.amxd` device and `.als` Live Set file
+1. **Single-Bang Testing**: Each fixture must execute the complete test suite with a single bang message. No additional message objects, buttons, or manual intervention should be required.
+2. **Comprehensive Output**: Test fixtures must provide detailed, structured console output with clear pass/fail indicators for each test step, enabling AI verification without human interpretation.
+3. **Co-located Files**: Each `.amxd` device has a corresponding `.ts` file in the same directory
+4. **Max TypeScript Compilation**: The `.ts` file uses Max's built-in TypeScript compiler (no external build step needed)
+5. **Import Support**: Fixtures can import from the package's compiled source using standard ES modules
+6. **AI Validation**: AI can validate TypeScript syntax, imports, and logic before human creates the `.amxd`
+7. **Live Set Integration**: Each fixture includes both `.amxd` device and `.als` Live Set file
 
 #### TypeScript Fixture Template:
 
@@ -146,13 +150,44 @@ class LiveSetBasicTest {
 // Initialize test instance
 const testApp = new LiveSetBasicTest();
 
-// Expose functions to Max for Live
+// SINGLE-BANG TESTING: Complete test suite runs on one bang
 function bang() {
-    testApp.initialize();
+    post('[Alits/TEST] ===========================================\n');
+    post('[Alits/TEST] LiveSet Basic Test Suite Starting\n');
+    post('[Alits/TEST] ===========================================\n');
+    
+    // Run complete test suite
+    runCompleteTestSuite().catch((error: any) => {
+        post(`[Alits/TEST] Test suite error: ${error.message}\n`);
+        post('[Alits/TEST] ===========================================\n');
+        post('[Alits/TEST] Test Suite FAILED\n');
+        post('[Alits/TEST] ===========================================\n');
+    });
 }
 
-function test_tempo(tempo: number) {
-    testApp.testTempoChange(tempo);
+// Run the complete test suite
+async function runCompleteTestSuite(): Promise<void> {
+    try {
+        // Step 1: Initialize LiveSet
+        post('[Alits/TEST] Step 1: Initializing LiveSet...\n');
+        await testApp.initialize();
+        
+        // Step 2: Test tempo functionality
+        post('[Alits/TEST] Step 2: Testing tempo functionality...\n');
+        await testApp.testTempoChange(120);
+        await testApp.testTempoChange(140);
+        
+        // Additional test steps...
+        
+        // Final summary
+        post('[Alits/TEST] ===========================================\n');
+        post('[Alits/TEST] Test Suite COMPLETED Successfully\n');
+        post('[Alits/TEST] ===========================================\n');
+        
+    } catch (error: any) {
+        post(`[Alits/TEST] Test suite failed: ${error.message}\n`);
+        throw error;
+    }
 }
 
 // Required for Max TypeScript compilation
@@ -259,31 +294,54 @@ To create a fixture device that tests basic LiveSet functionality in Max for Liv
 **Test Script: `/packages/alits-core/tests/manual/liveset-basic/test-script.md`**
 
 ```markdown
-# Test: Drum Pad Rename
+# Test: LiveSet Basic Functionality
 
 ## Preconditions
 - Ableton Live 11 Suite
 - Max 8 installed
-- A Drum Rack with at least one sample loaded
-- `DrumPadRename.amxd` fixture created
+- `LiveSetBasicTest.amxd` fixture created
 
 ## Setup
 1. Create a new Live set.
 2. Add a MIDI track.
-3. Insert a Drum Rack and load a sample on C1.
-4. Drag the `DrumPadRename.amxd` device onto the track.
+3. Drag the `LiveSetBasicTest.amxd` device onto the track.
 
 ## Actions
-1. Press the "Rename Pads" button in the device.
-2. Observe the Drum Rack pad names.
+1. Click the "compile" button in the Max device.
+2. Click the "bang" button in the Max device.
 
 ## Expected Results
-- The pad on C1 should be renamed to "C1".
-- Unused pads remain unchanged.
+The console should show:
+```
+[Alits/TEST] ===========================================
+[Alits/TEST] LiveSet Basic Test Suite Starting
+[Alits/TEST] ===========================================
+[Alits/TEST] Step 1: Initializing LiveSet...
+[Alits/TEST] LiveSet initialized successfully
+[Alits/TEST] Tempo: [current tempo]
+[Alits/TEST] Time Signature: [numerator]/[denominator]
+[Alits/TEST] Tracks: [number of tracks]
+[Alits/TEST] Scenes: [number of scenes]
+[Alits/TEST] Step 2: Testing tempo functionality...
+[Alits/TEST] Tempo changed to: 120
+[Alits/TEST] Tempo changed to: 140
+[Alits/TEST] Step 3: Testing time signature functionality...
+[Alits/TEST] Time signature changed to: 4/4
+[Alits/TEST] Time signature changed to: 3/4
+[Alits/TEST] Step 4: Testing track access...
+[Alits/TEST] Found [number] tracks
+[Alits/TEST] Step 5: Testing scene access...
+[Alits/TEST] Found [number] scenes
+[Alits/TEST] ===========================================
+[Alits/TEST] Test Suite COMPLETED Successfully
+[Alits/TEST] ===========================================
+```
 
 ## Verification
-- [ ] Pad renamed correctly
+- [ ] All test steps completed successfully
 - [ ] No errors in Max console
+- [ ] Final success message displayed
+- [ ] All functionality tested with single bang
 ```
 
 **Result Log: `/packages/alits-core/tests/manual/liveset-basic/results/liveset-basic-test-2025-09-09.yaml`**
