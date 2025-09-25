@@ -17,7 +17,9 @@ The goal is to minimize the feedback loop between code changes and real-world ve
 ### Principles
 
 * **Clear Separation**: Automated unit tests and manual testing fixtures both live within each package (`/packages/*/tests/` and `/packages/*/tests/manual/` respectively).
-* **Rapid Setup**: Each manual fixture should be a small, focused `.amxd` device that demonstrates one feature. To begin with, these devices must be created and saved manually in Ableton Live’s Max for Live UI (due to licensing restrictions), then added to the repo for use as fixtures.
+* **Single-Bang Testing**: Each manual fixture must be completely self-contained and test all functionality with a single bang message. No additional message objects or manual intervention should be required to execute the complete test suite.
+* **Rapid Setup**: Each manual fixture should be a small, focused `.amxd` device that demonstrates one feature. To begin with, these devices must be created and saved manually in Ableton Live's Max for Live UI (due to licensing restrictions), then added to the repo for use as fixtures.
+* **Comprehensive Output**: Test fixtures must provide detailed, structured console output with clear pass/fail indicators for each test step, enabling AI verification without human interpretation.
 * **Clarity**: Test scripts must use step-by-step instructions suitable for non-developer testers.
 * **Traceability**: Every manual test run should be logged with results, dates, and tester identity.
 * **Reusability**: Fixtures should be reusable across regression tests.
@@ -94,11 +96,13 @@ Manual testing fixtures use Max for Live's built-in TypeScript compilation syste
 
 #### Key Principles:
 
-1. **Co-located Files**: Each `.amxd` device has a corresponding `.ts` file in the same directory
-2. **Max TypeScript Compilation**: The `.ts` file uses Max's built-in TypeScript compiler (no external build step needed)
-3. **Import Support**: Fixtures can import from the package's compiled source using standard ES modules
-4. **AI Validation**: AI can validate TypeScript syntax, imports, and logic before human creates the `.amxd`
-5. **Live Set Integration**: Each fixture includes both `.amxd` device and `.als` Live Set file
+1. **Single-Bang Testing**: Each fixture must execute the complete test suite with a single bang message. No additional message objects, buttons, or manual intervention should be required.
+2. **Comprehensive Output**: Test fixtures must provide detailed, structured console output with clear pass/fail indicators for each test step, enabling AI verification without human interpretation.
+3. **Co-located Files**: Each `.amxd` device has a corresponding `.ts` file in the same directory
+4. **Max TypeScript Compilation**: The `.ts` file uses Max's built-in TypeScript compiler (no external build step needed)
+5. **Import Support**: Fixtures can import from the package's compiled source using standard ES modules
+6. **AI Validation**: AI can validate TypeScript syntax, imports, and logic before human creates the `.amxd`
+7. **Live Set Integration**: Each fixture includes both `.amxd` device and `.als` Live Set file
 
 #### TypeScript Fixture Template:
 
@@ -146,14 +150,22 @@ class LiveSetBasicTest {
 // Initialize test instance
 const testApp = new LiveSetBasicTest();
 
-// Expose functions to Max for Live
+// SINGLE-BANG TESTING: Complete test suite runs on one bang
 function bang() {
-    testApp.initialize();
+    post('[Alits/TEST] ===========================================\n');
+    post('[Alits/TEST] LiveSet Basic Test Suite Starting\n');
+    post('[Alits/TEST] ===========================================\n');
+    
+    // Run complete test suite
+    runCompleteTestSuite().catch((error: any) => {
+        post(`[Alits/TEST] Test suite error: ${error.message}\n`);
+        post('[Alits/TEST] ===========================================\n');
+        post('[Alits/TEST] Test Suite FAILED\n');
+        post('[Alits/TEST] ===========================================\n');
+    });
 }
 
-function test_tempo(tempo: number) {
-    testApp.testTempoChange(tempo);
-}
+// ...
 
 // Required for Max TypeScript compilation
 let module = {};
