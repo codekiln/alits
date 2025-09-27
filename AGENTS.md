@@ -76,6 +76,12 @@ async function myFunction(): Promise<string> {
 - **Production**: `pnpm run build`
 - **Dependencies**: Use `maxmsp-ts` tool to add/remove npm packages
 
+### Testing Environment
+- **MaxMSP Test App**: `apps/maxmsp-test/` provides a testing environment for Max for Live JavaScript development
+- **Purpose**: Test JavaScript code directly in Max 8's JavaScript engine, validate TypeScript compilation, and test local library imports
+- **Key Features**: Includes test fixtures like `GlobalMethodsTest.js` to validate JavaScript capabilities and Promise polyfill functionality
+- **Usage**: Manual testing of JavaScript functionality, TypeScript compilation validation, and debugging JavaScript environment capabilities
+
 **Full Documentation**: [docs/brief-typescript-compilation-max-for-live.md](./docs/brief-typescript-compilation-max-for-live.md)
 
 ## Critical File Safety Rules
