@@ -1,9 +1,10 @@
 {
-  "entry": "src/GlobalMethodsTest.ts",
-  "output": "fixtures/GlobalMethodsTest.js",
-  "bundles": {
-    "@alits/core": "fixtures/alits_debug.js"
-  },
-  "target": "max8",
-  "format": "cjs"
+  "output_path": "",
+  "dependencies": {
+    "@alits/core": {
+      "alias": "alits",
+      "files": ["index.js"],
+      "path": "../../../dist"
+    }
+  }
 }

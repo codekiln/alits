@@ -12,6 +12,7 @@ interface Dependency {
 interface Config {
   output_path: string;
   dependencies: Record<string, Dependency>;
+  disable_promise_polyfill?: boolean;
 }
 
 interface AddOptions {
