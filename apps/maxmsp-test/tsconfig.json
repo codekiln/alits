@@ -7,7 +7,7 @@
     "strict": false,
     "noImplicitAny": false,
     "sourceMap": false,
-    "outDir": "./Code",
+    "outDir": "./Patchers",
     "baseUrl": "src",
     "types": ["maxmsp"],
     "lib": ["es5"]
