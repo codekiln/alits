@@ -318,18 +318,16 @@ async function remove(libraryName: string) {
 }
 
 // Process emitted files to inject polyfill at the very top
-async function processEmittedFiles() {
-  const outDir = path.join(process.cwd(), "fixtures");
-  
+async function processEmittedFiles(outDir: string) {
   try {
     const files = await fs.readdir(outDir);
     const jsFiles = files.filter(file => file.endsWith('.js'));
-    
+
     for (const file of jsFiles) {
       const filePath = path.join(outDir, file);
       const content = await fs.readFile(filePath, 'utf-8');
       const processedContent = Max8TransformTransformer.processEmittedText(content);
-      
+
       if (processedContent !== content) {
         await fs.writeFile(filePath, processedContent, 'utf-8');
         console.log(`Processed polyfill injection in ${file}`);
@@ -426,17 +424,21 @@ declare global {
     
     // Emit with transformers
     const emitResult = program.emit(undefined, undefined, undefined, undefined, transformers);
-    
+
     if (emitResult.emitSkipped) {
       throw new Error("TypeScript compilation failed - emit was skipped");
     }
-    
+
+    // Get output directory from compiler options
+    // compilerOptions.outDir is already an absolute path after ts.parseJsonConfigFileContent
+    const outDir = compilerOptions.outDir || path.join(process.cwd(), "dist");
+
     // Process emitted files to inject polyfill at the very top
-    await processEmittedFiles();
-    
+    await processEmittedFiles(outDir);
+
     // Run post-build processing
     await postBuild();
-    
+
     console.log("Build completed successfully with Max 8 transformer.");
     return true;
   } catch (error) {

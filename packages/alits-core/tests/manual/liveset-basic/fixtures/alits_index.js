@@ -1,6 +1,6 @@
 // @alits/core Build
-// Build: 2025-09-25T11:00:38.749Z
-// Git: 53bb388
+// Build: 2025-10-02T11:15:18.728Z
+// Git: 9d56e0b
 // Entrypoint: index.ts
 // Minified: No (Debug Build)
 // RxJS: Included
