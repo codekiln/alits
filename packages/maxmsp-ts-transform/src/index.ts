@@ -28,6 +28,31 @@ declare global {
 `;
 
 /**
+ * Max 8 Iterator polyfill for TypeScript's __generator helper
+ * This minimal polyfill makes TypeScript's generator-based async/await work in Max 8
+ */
+const MAX8_ITERATOR_POLYFILL = `
+// Max 8 Iterator polyfill for async/await support
+(function() {
+  // Max 8's built-in Iterator has incompatible prototype that breaks TypeScript's __generator
+  // Solution: Hide the native Iterator so __generator falls back to Object.prototype
+  // __generator code: g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype)
+
+  // Save reference to native Iterator if it exists
+  var NativeIterator = (typeof Iterator !== 'undefined') ? Iterator : null;
+
+  // Force Iterator to be undefined during __generator execution
+  // This makes __generator use Object.prototype instead
+  try {
+    delete this.Iterator;
+  } catch(e) {
+    // In strict mode or if Iterator is non-configurable, set to undefined
+    this.Iterator = undefined;
+  }
+})();
+`;
+
+/**
  * Max 8 Promise polyfill code that uses Max Task for scheduling
  * This polyfill must be injected at the top of compiled files
  * to ensure Promise is available before TypeScript's async/await helpers execute
@@ -182,7 +207,8 @@ export class Max8TransformTransformer {
 
       // Create a raw text injection that will be emitted at the very top
       // This bypasses TypeScript's AST and injects directly into the output
-      const polyfillCode = MAX8_PROMISE_POLYFILL.trim();
+      // Include both Iterator and Promise polyfills for full async/await support
+      const polyfillCode = MAX8_ITERATOR_POLYFILL.trim() + '\n' + MAX8_PROMISE_POLYFILL.trim();
       
       // Create a statement that will be emitted as raw JavaScript
       // We use a special marker that can be replaced during post-processing
@@ -208,14 +234,16 @@ export class Max8TransformTransformer {
     // Look for the polyfill marker and replace it with the actual polyfill
     const polyfillMarker = /"__MAX8_POLYFILL_START__(.*?)__MAX8_POLYFILL_END__"/s;
     const match = emittedText.match(polyfillMarker);
-    
+
     if (match) {
       const polyfillCode = match[1];
+      // Unescape the newlines that TypeScript added when emitting the string literal
+      const unescapedPolyfill = polyfillCode.replace(/\\n/g, '\n');
       // Remove the marker line and inject the polyfill at the very top
       const textWithoutMarker = emittedText.replace(polyfillMarker, '');
-      return polyfillCode + '\n' + textWithoutMarker;
+      return unescapedPolyfill + '\n' + textWithoutMarker;
     }
-    
+
     return emittedText;
   }
 
