@@ -33,13 +33,12 @@ declare global {
  * to ensure Promise is available before TypeScript's async/await helpers execute
  */
 const MAX8_PROMISE_POLYFILL = `
+// Max 8 Promise polyfill - must be first!
 (function() {
-  // Check if Promise already exists - typeof returns "undefined" for undeclared variables
   if (typeof Promise !== 'undefined') {
     return;
   }
   
-  // Max Task-based Promise implementation
   function Max8Promise(executor) {
     var self = this;
     self.state = 'pending';
@@ -143,12 +142,8 @@ const MAX8_PROMISE_POLYFILL = `
     });
   };
   
-  // Register globally immediately
-  if (typeof global !== 'undefined') {
-    global.Promise = Max8Promise;
-  } else {
-    eval('Promise = Max8Promise');
-  }
+  // Register globally using direct assignment (works in Max 8)
+  Promise = Max8Promise;
 })();
 `;
 
@@ -163,6 +158,65 @@ export class Max8TransformTransformer {
     return (sourceFile: ts.SourceFile) => {
       return this.transformSourceFile(sourceFile, context);
     };
+  }
+
+  /**
+   * Post-emit transformer that injects polyfill as raw text at the very top
+   * This ensures the polyfill appears before any TypeScript-generated helpers
+   */
+  public createPostEmit(): ts.Transformer<ts.SourceFile> {
+    return (sourceFile: ts.SourceFile) => {
+      // Only inject polyfill if this is a JavaScript file and polyfill injection is enabled
+      if (!this.options.injectPolyfill || sourceFile.isDeclarationFile) {
+        return sourceFile;
+      }
+
+      // Check if the file contains async/await in the source text
+      // This is more reliable than AST detection which can be affected by compiler host modifications
+      const sourceText = sourceFile.text;
+      const hasAsyncInText = sourceText.includes('async ') || sourceText.includes('await ') || sourceText.includes(': Promise<');
+      
+      if (!hasAsyncInText) {
+        return sourceFile;
+      }
+
+      // Create a raw text injection that will be emitted at the very top
+      // This bypasses TypeScript's AST and injects directly into the output
+      const polyfillCode = MAX8_PROMISE_POLYFILL.trim();
+      
+      // Create a statement that will be emitted as raw JavaScript
+      // We use a special marker that can be replaced during post-processing
+      const polyfillMarker = ts.factory.createExpressionStatement(
+        ts.factory.createStringLiteral(`__MAX8_POLYFILL_START__${polyfillCode}__MAX8_POLYFILL_END__`)
+      );
+
+      // Insert polyfill marker at the beginning of the file
+      const newStatements = [polyfillMarker, ...sourceFile.statements];
+      
+      return ts.factory.updateSourceFile(
+        sourceFile,
+        newStatements
+      );
+    };
+  }
+
+  /**
+   * Post-emit text replacement function that processes the emitted JavaScript
+   * This is called after TypeScript compilation to inject the polyfill at the very top
+   */
+  public static processEmittedText(emittedText: string): string {
+    // Look for the polyfill marker and replace it with the actual polyfill
+    const polyfillMarker = /"__MAX8_POLYFILL_START__(.*?)__MAX8_POLYFILL_END__"/s;
+    const match = emittedText.match(polyfillMarker);
+    
+    if (match) {
+      const polyfillCode = match[1];
+      // Remove the marker line and inject the polyfill at the very top
+      const textWithoutMarker = emittedText.replace(polyfillMarker, '');
+      return polyfillCode + '\n' + textWithoutMarker;
+    }
+    
+    return emittedText;
   }
 
   private transformSourceFile(
@@ -180,7 +234,8 @@ export class Max8TransformTransformer {
       return sourceFile;
     }
 
-    // Create the polyfill statement
+    // Create the polyfill statement - inject as raw JavaScript code
+    // Use a simple function call that will be emitted at the top
     const polyfillStatement = ts.factory.createExpressionStatement(
       ts.factory.createCallExpression(
         ts.factory.createParenthesizedExpression(
@@ -194,10 +249,7 @@ export class Max8TransformTransformer {
             ts.factory.createBlock([
               ts.factory.createExpressionStatement(
                 ts.factory.createCallExpression(
-                  ts.factory.createPropertyAccessExpression(
-                    ts.factory.createIdentifier('eval'),
-                    ts.factory.createIdentifier('call')
-                  ),
+                  ts.factory.createIdentifier('eval'),
                   undefined,
                   [ts.factory.createStringLiteral(MAX8_PROMISE_POLYFILL)]
                 )
@@ -282,13 +334,24 @@ export interface Max8TransformOptions {
 }
 
 /**
- * Create a Max 8 transform transformer factory
+ * Create a Max 8 transform transformer factory for before phase
  */
 export function createMax8Transform(options?: Max8TransformOptions): ts.TransformerFactory<ts.SourceFile> {
   return (context: ts.TransformationContext) => {
     return new Max8TransformTransformer(options).create(context);
   };
 }
+
+/**
+ * Create a Max 8 transform transformer factory for after phase
+ * This ensures the polyfill is injected after TypeScript helpers are generated
+ */
+export function createMax8TransformAfter(options?: Max8TransformOptions): ts.TransformerFactory<ts.SourceFile> {
+  return (context: ts.TransformationContext) => {
+    return new Max8TransformTransformer(options).createPostEmit();
+  };
+}
+
 
 /**
  * Default export for easy importing

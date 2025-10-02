@@ -3,7 +3,7 @@ import * as fs from "fs/promises";
 import * as path from "path";
 import chokidar from "chokidar";
 import * as ts from "typescript";
-import { createMax8Transform } from "@codekiln/maxmsp-ts-transform";
+import { createMax8TransformAfter, Max8TransformTransformer } from "@codekiln/maxmsp-ts-transform";
 
 interface Dependency {
   alias: string;
@@ -317,6 +317,30 @@ async function remove(libraryName: string) {
   }
 }
 
+// Process emitted files to inject polyfill at the very top
+async function processEmittedFiles() {
+  const outDir = path.join(process.cwd(), "fixtures");
+  
+  try {
+    const files = await fs.readdir(outDir);
+    const jsFiles = files.filter(file => file.endsWith('.js'));
+    
+    for (const file of jsFiles) {
+      const filePath = path.join(outDir, file);
+      const content = await fs.readFile(filePath, 'utf-8');
+      const processedContent = Max8TransformTransformer.processEmittedText(content);
+      
+      if (processedContent !== content) {
+        await fs.writeFile(filePath, processedContent, 'utf-8');
+        console.log(`Processed polyfill injection in ${file}`);
+      }
+    }
+  } catch (error) {
+    console.error("Error processing emitted files:", error);
+    throw error;
+  }
+}
+
 // Build command logic with custom transformer
 async function build() {
   try {
@@ -395,8 +419,9 @@ declare global {
     const program = ts.createProgram(sourceFiles, compilerOptions, host);
     
     // Create custom transformers for Max 8 compatibility
+    // Use after phase to ensure polyfill is injected after TypeScript helpers
     const transformers: ts.CustomTransformers = {
-      before: [createMax8Transform({ injectPolyfill: true })]
+      after: [createMax8TransformAfter({ injectPolyfill: true })]
     };
     
     // Emit with transformers
@@ -405,6 +430,9 @@ declare global {
     if (emitResult.emitSkipped) {
       throw new Error("TypeScript compilation failed - emit was skipped");
     }
+    
+    // Process emitted files to inject polyfill at the very top
+    await processEmittedFiles();
     
     // Run post-build processing
     await postBuild();

@@ -1,6 +1,0 @@
-services:
-  node:
-    build: .
-    volumes:
-      - .:/app
-      # No node_modules volume mounts - let pnpm manage dependencies in container
