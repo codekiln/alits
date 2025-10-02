@@ -10,4 +10,10 @@ if [ ! -d "node_modules" ] || [ ! -w "$PNPM_HOME" ]; then
     pnpm install --frozen-lockfile
 fi
 
+# ADD THIS BLOCK to ensure filters are configured GLOBALLY for the 'node' user
+echo "🔧 Configuring Ableton Git filters globally for 'node' user..."
+if [ -f "scripts/setup-ableton-git.sh" ]; then
+    ./scripts/setup-ableton-git.sh --global
+fi
+
 echo "✅ Post-create setup complete!"
