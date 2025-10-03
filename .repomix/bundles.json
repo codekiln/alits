@@ -36,6 +36,18 @@
         "docker-compose.yml",
         ".dockerignore"
       ]
+    },
+    "devcontainer-287": {
+      "name": "devcontainer",
+      "created": "2025-10-02T09:26:49.889Z",
+      "lastUsed": "2025-10-02T10:43:03.908Z",
+      "tags": [],
+      "files": [
+        ".devcontainer",
+        ".dockerignore",
+        ".gitattributes",
+        ".gitignore-ableton"
+      ]
     }
   }
 }

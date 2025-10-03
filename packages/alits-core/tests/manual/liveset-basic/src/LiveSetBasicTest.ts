@@ -1,5 +1,6 @@
 // LiveSet Basic Functionality Test - Max 8 Compatible with Promise Polyfill
 // This version uses async/await with the Max 8 Promise polyfill
+// Follows Single-Bang Testing standard from brief-manual-testing-fixtures.md
 
 // Max for Live API declarations
 declare var inlets: number;
@@ -29,6 +30,19 @@ declare var Promise: MaxPromiseConstructor;
 inlets = 1;
 outlets = 1;
 autowatch = 1;
+
+// Build identification
+function printBuildInfo(): void {
+    var now = new Date();
+    var etOffset = -4 * 60; // ET is UTC-4 (EDT) in October
+    var etTime = new Date(now.getTime() + (etOffset * 60 * 1000));
+    var timestamp = etTime.toISOString().replace('T', ' ').replace(/\.\d+Z$/, ' ET');
+
+    post('[BUILD] Entrypoint: LiveSetBasicTest\n');
+    post('[BUILD] Timestamp: ' + timestamp + '\n');
+    post('[BUILD] Source: @alits/core debug build\n');
+    post('[BUILD] Max 8 Compatible: Yes\n');
+}
 
 class LiveSetBasicTest {
     private liveSet: LiveSet | null = null;
@@ -127,17 +141,73 @@ class LiveSetBasicTest {
 // Initialize test instance
 const testApp = new LiveSetBasicTest();
 
-// Expose functions to Max for Live
+// SINGLE-BANG TESTING: Complete test suite runs on one bang
+// This follows the standard from brief-manual-testing-fixtures.md line 20
 function bang() {
-    testApp.initialize();
+    printBuildInfo();
+    post('[Alits/TEST] ===========================================\n');
+    post('[Alits/TEST] LiveSet Basic Test Suite Starting\n');
+    post('[Alits/TEST] ===========================================\n');
+
+    // Run complete test suite with proper Promise handling
+    runCompleteTestSuite().catch(function(error: any) {
+        post('[Alits/TEST] Test suite error: ' + error.message + '\n');
+        post('[Alits/TEST] ===========================================\n');
+        post('[Alits/TEST] Test Suite FAILED\n');
+        post('[Alits/TEST] ===========================================\n');
+    });
 }
 
+// Complete test suite that runs all tests sequentially
+async function runCompleteTestSuite(): Promise<void> {
+    try {
+        // Test 1: Initialize LiveSet
+        post('[Alits/TEST] Test 1: Initializing LiveSet...\n');
+        await testApp.initialize();
+        post('[Alits/TEST] Test 1: PASSED\n\n');
+
+        // Test 2: Track Access
+        post('[Alits/TEST] Test 2: Testing track access...\n');
+        testApp.testTrackAccess();
+        post('[Alits/TEST] Test 2: PASSED\n\n');
+
+        // Test 3: Scene Access
+        post('[Alits/TEST] Test 3: Testing scene access...\n');
+        testApp.testSceneAccess();
+        post('[Alits/TEST] Test 3: PASSED\n\n');
+
+        // Test 4: Tempo Change (test with current tempo + 1)
+        if (testApp['liveSet']) {
+            const currentTempo = testApp['liveSet'].tempo;
+            post('[Alits/TEST] Test 4: Testing tempo change...\n');
+            await testApp.testTempoChange(currentTempo + 1);
+            post('[Alits/TEST] Test 4: PASSED\n\n');
+
+            // Restore original tempo
+            await testApp.testTempoChange(currentTempo);
+        }
+
+        post('[Alits/TEST] ===========================================\n');
+        post('[Alits/TEST] All Tests PASSED\n');
+        post('[Alits/TEST] ===========================================\n');
+
+    } catch (error: any) {
+        post('[Alits/TEST] Test suite failed: ' + error.message + '\n');
+        throw error;
+    }
+}
+
+// Individual test functions (for manual testing if needed)
 function test_tempo(tempo: number) {
-    testApp.testTempoChange(tempo);
+    testApp.testTempoChange(tempo).catch(function(error: any) {
+        post('[Alits/TEST] Tempo test failed: ' + error.message + '\n');
+    });
 }
 
 function test_time_signature(numerator: number, denominator: number) {
-    testApp.testTimeSignatureChange(numerator, denominator);
+    testApp.testTimeSignatureChange(numerator, denominator).catch(function(error: any) {
+        post('[Alits/TEST] Time signature test failed: ' + error.message + '\n');
+    });
 }
 
 function test_tracks() {
