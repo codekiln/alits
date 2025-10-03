@@ -205,11 +205,11 @@ flowchart TD
 * **Purpose**: Validate behavior within Ableton Live's Max for Live runtime
 * **Structure**: Co-located within each package at `/packages/*/tests/manual/`
 * **Components**:
-  * `.amxd` device fixtures in `/fixtures/`
-  * Creation guides in `/creation/` (step-by-step `.amxd` creation)
-  * Test scripts in `/scripts/` (human-readable validation steps)
-  * Result logs in `/results/` (YAML/Markdown with timestamps)
-  * Optional artifacts in `/artifacts/` (screenshots, logs, screencasts)
+  * `.amxd` device fixtures in `{fixture-name}/fixtures/`
+  * Creation guides in `{fixture-name}/creation-guide.md` (step-by-step `.amxd` creation)
+  * Test scripts in `{fixture-name}/test-script.md` (human-readable validation steps)
+  * Result logs in `{fixture-name}/results/` (YAML/Markdown with timestamps)
+  * Self-contained structure with package.json, tsconfig.json, maxmsp.config.json
 
 ### Semi-Automated Validation
 * **Structured Logging**: `[Alits/TEST]` markers for automated parsing

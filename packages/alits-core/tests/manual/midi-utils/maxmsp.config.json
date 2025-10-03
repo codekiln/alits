@@ -1,0 +1,10 @@
+{
+  "output_path": "",
+  "dependencies": {
+    "@alits/core": {
+      "alias": "alits",
+      "files": ["index.js"],
+      "path": ""
+    }
+  }
+}

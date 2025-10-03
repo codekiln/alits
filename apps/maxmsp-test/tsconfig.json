@@ -4,10 +4,10 @@
     "module": "CommonJS",
     "target": "ES5",
     "ignoreDeprecations": "5.0",
-    "strict": true,
-    "noImplicitAny": true,
+    "strict": false,
+    "noImplicitAny": false,
     "sourceMap": false,
-    "outDir": "./Code",
+    "outDir": "./Patchers",
     "baseUrl": "src",
     "types": ["maxmsp"],
     "lib": ["es5"]

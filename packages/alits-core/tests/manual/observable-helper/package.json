@@ -1,0 +1,19 @@
+{
+  "name": "@alits/core-manual-test-observable-helper",
+  "version": "0.0.1",
+  "description": "Manual test fixture for Observable helper functionality",
+  "type": "module",
+  "scripts": {
+    "build": "node ../../../../maxmsp-ts/dist/index.js build",
+    "dev": "node ../../../../maxmsp-ts/dist/index.js dev",
+    "clean": "rm -f fixtures/*.js",
+    "test": "echo 'Manual test - run in Ableton Live'"
+  },
+  "dependencies": {
+    "@alits/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@codekiln/maxmsp-ts": "workspace:*",
+    "typescript": "^5.6.0"
+  }
+}

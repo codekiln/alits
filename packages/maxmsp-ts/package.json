@@ -30,6 +30,7 @@
     "typescript": "^5.6.2"
   },
   "dependencies": {
+    "@codekiln/maxmsp-ts-transform": "link:../maxmsp-ts-transform",
     "chokidar": "^4.0.1"
   }
 }

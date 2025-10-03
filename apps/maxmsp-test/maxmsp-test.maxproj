@@ -15,11 +15,22 @@
 				"local" : 1,
 				"toplevel" : 1
 			}
+,
+			"GlobalMethodsTest.maxpat" : 			{
+				"kind" : "patcher",
+				"local" : 1,
+				"toplevel" : 1
+			}
 
 		}
 ,
 		"code" : 		{
 			"Main.js" : 			{
+				"kind" : "javascript",
+				"local" : 1
+			}
+,
+			"GlobalMethodsTest.js" : 			{
 				"kind" : "javascript",
 				"local" : 1
 			}
